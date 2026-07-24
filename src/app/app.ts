@@ -30,14 +30,14 @@ export class App implements OnInit {
   showPreloader = true;
 
   ngOnInit() {
-    // Start fading out at 2 seconds
+    // Start fading out at 300ms
     setTimeout(() => {
       this.isLoading = false;
-    }, 2000);
+    }, 300);
 
-    // Completely unmount preloader container at 2.6 seconds (after 600ms transition)
+    // Completely unmount preloader container at 800ms (after 500ms transition)
     setTimeout(() => {
       this.showPreloader = false;
-    }, 2600);
+    }, 800);
   }
 }

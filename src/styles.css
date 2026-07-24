@@ -193,3 +193,36 @@ body {
   transition: opacity 0.4s ease, transform 0.1s ease-out;
   opacity: 0;
 }
+
+/* Custom spin animation when first seen */
+@keyframes spin360 {
+  0% {
+    transform: perspective(1000px) rotateY(0deg) scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1000px) rotateY(360deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.spin-reveal-active {
+  animation: spin360 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  backface-visibility: hidden;
+}
+
+/* Mobile menu animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}

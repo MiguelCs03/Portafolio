@@ -10,8 +10,13 @@ import { LanguageService } from '../../services/language';
 export class Header implements OnInit {
   isScrolled = false;
   isDark = true;
+  isMobileMenuOpen = false;
 
   constructor(public langService: LanguageService) {}
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 
   ngOnInit() {
     const theme = localStorage.getItem('theme');

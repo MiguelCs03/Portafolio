@@ -18,7 +18,7 @@
       </a>
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 sm:gap-4">
       <!-- Language Switcher Button -->
       <button (click)="langService.toggleLanguage()"
               class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center font-label-md text-label-md text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none">
@@ -34,9 +34,39 @@
       </button>
 
       <!-- Resume Button -->
-      <a href="mailto:mangelcs2003@gmail.com" class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label-md text-label-md font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,245,212,0.3)] text-center">
+      <a href="mailto:mangelcs2003@gmail.com" class="hidden sm:inline-block bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label-md text-label-md font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,245,212,0.3)] text-center">
+        {{ langService.t().nav.resume }}
+      </a>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button (click)="toggleMobileMenu()"
+              class="md:hidden w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none"
+              [attr.aria-label]="isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'">
+        <span class="material-symbols-outlined text-[24px]">
+          {{ isMobileMenuOpen ? 'close' : 'menu' }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Dropdown -->
+  @if (isMobileMenuOpen) {
+    <div class="md:hidden border-t border-white/10 bg-surface/95 backdrop-blur-md px-gutter py-4 space-y-4 animate-fade-in">
+      <a (click)="isMobileMenuOpen = false" class="block font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-white/5" href="#tech">
+        {{ langService.t().nav.tech }}
+      </a>
+      <a (click)="isMobileMenuOpen = false" class="block font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-white/5" href="#experience">
+        {{ langService.t().nav.experience }}
+      </a>
+      <a (click)="isMobileMenuOpen = false" class="block font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-white/5" href="#projects">
+        {{ langService.t().nav.projects }}
+      </a>
+      <a (click)="isMobileMenuOpen = false" class="block font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-white/5" href="#contact">
+        {{ langService.t().nav.contact }}
+      </a>
+      <a (click)="isMobileMenuOpen = false" href="mailto:mangelcs2003@gmail.com" class="block w-full text-center bg-primary-container text-on-primary-container py-3 rounded-xl font-label-md text-label-md font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,245,212,0.3)]">
         {{ langService.t().nav.resume }}
       </a>
     </div>
-  </div>
+  }
 </nav>

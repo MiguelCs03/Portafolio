@@ -6,18 +6,23 @@
     </div>
     <div class="h-[1px] flex-grow bg-gradient-to-r from-primary/30 to-transparent ml-8 hidden md:block"></div>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-    @for (cat of categories; track cat.title) {
-      <div appThreeDTilt [class]="cat.isFeatured ? 'glass-card p-6 rounded-2xl border-primary/20 bg-primary/5' : 'glass-card p-6 rounded-2xl'">
-        <div class="flex items-center gap-2 mb-4 border-b border-white/5 pb-2 app-parallax">
-          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">{{ cat.icon }}</span>
-          <h3 class="font-headline-md text-[18px] font-bold text-on-surface">{{ cat.title }}</h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+    @for (cat of categories; track cat.title; let idx = $index) {
+      <div appThreeDTilt appScrollSpin
+           [class]="(cat.isFeatured ? 'tech-card featured-card' : 'tech-card') + (idx === 4 ? ' sm:max-lg:col-span-2' : '')">
+        <div class="flex items-center gap-3 mb-5 border-b border-white/10 pb-3 app-parallax">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(0,245,212,0.15)]">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">{{ cat.icon }}</span>
+          </div>
+          <h3 class="font-headline-md text-[19px] font-bold text-on-surface tracking-tight">{{ cat.title }}</h3>
         </div>
-        <ul class="space-y-3 font-code-sm app-parallax">
+        <ul class="space-y-3.5 font-code-sm app-parallax">
           @for (skill of cat.skills; track skill.name) {
             <li class="flex items-center gap-3 group/item">
-              <i [class]="skill.icon + ' text-xl transition-transform group-hover/item:scale-125 duration-300'"></i>
-              <span class="text-on-surface-variant group-hover/item:text-on-surface transition-colors">{{ skill.name }}</span>
+              <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center group-hover/item:border-primary/30 group-hover/item:bg-primary/5 transition-all duration-300">
+                <i [class]="skill.icon + ' text-base transition-transform group-hover/item:scale-110 duration-300'"></i>
+              </div>
+              <span class="text-on-surface-variant group-hover/item:text-on-surface font-medium transition-colors">{{ skill.name }}</span>
             </li>
           }
         </ul>

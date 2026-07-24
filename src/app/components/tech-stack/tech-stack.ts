@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ThreeDTilt } from '../../directives/three-d-tilt';
+import { ScrollSpin } from '../../directives/scroll-spin';
 import { LanguageService } from '../../services/language';
 
 interface Skill {
@@ -16,7 +17,7 @@ interface TechCategory {
 
 @Component({
   selector: 'app-tech-stack',
-  imports: [ThreeDTilt],
+  imports: [ThreeDTilt, ScrollSpin],
   templateUrl: './tech-stack.html',
   styleUrl: './tech-stack.css',
 })
