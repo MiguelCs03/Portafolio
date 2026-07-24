@@ -1,0 +1,42 @@
+<nav class="fixed top-0 w-full z-50 border-b border-white/10 nav-blur transition-all duration-300"
+     [class.py-2]="isScrolled" [class.py-4]="!isScrolled">
+  <div class="flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto">
+    <div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">MACS</div>
+    
+    <div class="hidden md:flex items-center gap-stack-lg">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#tech">
+        {{ langService.t().nav.tech }}
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#experience">
+        {{ langService.t().nav.experience }}
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#projects">
+        {{ langService.t().nav.projects }}
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#contact">
+        {{ langService.t().nav.contact }}
+      </a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- Language Switcher Button -->
+      <button (click)="langService.toggleLanguage()"
+              class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center font-label-md text-label-md text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none">
+        {{ langService.currentLang() === 'es' ? 'EN' : 'ES' }}
+      </button>
+
+      <!-- Theme Switcher Button (Sun/Moon) -->
+      <button (click)="toggleTheme()"
+              class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none">
+        <span class="material-symbols-outlined text-[20px]">
+          {{ isDark ? 'light_mode' : 'dark_mode' }}
+        </span>
+      </button>
+
+      <!-- Resume Button -->
+      <a href="mailto:mangelcs2003@gmail.com" class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label-md text-label-md font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,245,212,0.3)] text-center">
+        {{ langService.t().nav.resume }}
+      </a>
+    </div>
+  </div>
+</nav>

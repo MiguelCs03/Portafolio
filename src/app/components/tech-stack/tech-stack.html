@@ -1,0 +1,27 @@
+<section class="py-section-gap px-gutter max-w-container-max mx-auto" id="tech">
+  <div class="flex flex-col md:flex-row justify-between items-end mb-stack-lg gap-4">
+    <div>
+      <h2 class="font-headline-lg text-headline-lg text-on-surface">{{ langService.t().tech.title }}</h2>
+      <p class="text-on-surface-variant font-body-md mt-2">{{ langService.t().tech.desc }}</p>
+    </div>
+    <div class="h-[1px] flex-grow bg-gradient-to-r from-primary/30 to-transparent ml-8 hidden md:block"></div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    @for (cat of categories; track cat.title) {
+      <div appThreeDTilt [class]="cat.isFeatured ? 'glass-card p-6 rounded-2xl border-primary/20 bg-primary/5' : 'glass-card p-6 rounded-2xl'">
+        <div class="flex items-center gap-2 mb-4 border-b border-white/5 pb-2 app-parallax">
+          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">{{ cat.icon }}</span>
+          <h3 class="font-headline-md text-[18px] font-bold text-on-surface">{{ cat.title }}</h3>
+        </div>
+        <ul class="space-y-3 font-code-sm app-parallax">
+          @for (skill of cat.skills; track skill.name) {
+            <li class="flex items-center gap-3 group/item">
+              <i [class]="skill.icon + ' text-xl transition-transform group-hover/item:scale-125 duration-300'"></i>
+              <span class="text-on-surface-variant group-hover/item:text-on-surface transition-colors">{{ skill.name }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</section>

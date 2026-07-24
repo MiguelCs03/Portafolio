@@ -1,0 +1,70 @@
+<section class="py-section-gap px-gutter bg-surface-container-lowest" id="contact">
+  <div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-stack-lg items-center">
+    <div class="space-y-stack-md">
+      <h2 class="font-headline-lg text-headline-lg text-on-surface">{{ langService.t().contact.title }}</h2>
+      <p class="text-on-surface-variant text-body-lg max-w-md">
+        {{ langService.t().contact.desc }}
+      </p>
+      <div class="space-y-4 pt-8">
+        <a class="flex items-center gap-4 group" href="mailto:mangelcs2003@gmail.com">
+          <div class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all">
+            <span class="material-symbols-outlined">mail</span>
+          </div>
+          <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface transition-colors">mangelcs2003@gmail.com</span>
+        </a>
+        <a class="flex items-center gap-4 group" href="https://www.linkedin.com/in/miguel-cesary/" target="_blank">
+          <div class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary group-hover:bg-[#0077b5] group-hover:text-white transition-all">
+            <i class="devicon-linkedin-plain text-xl"></i>
+          </div>
+          <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface transition-colors">LinkedIn: miguel-cesary</span>
+        </a>
+        <a class="flex items-center gap-4 group" href="https://wa.me/591" target="_blank">
+          <div class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary group-hover:bg-[#25d366] group-hover:text-white transition-all">
+            <span class="material-symbols-outlined">chat</span>
+          </div>
+          <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface transition-colors">WhatsApp: +591 ...</span>
+        </a>
+      </div>
+    </div>
+    <div class="glass-card p-8 rounded-3xl">
+      @if (submitted) {
+        <div class="space-y-4 text-center py-12 animate-pulse-slow">
+          <span class="material-symbols-outlined text-primary text-6xl">check_circle</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface">{{ langService.t().contact.sentTitle }}</h3>
+          <p class="text-on-surface-variant font-body-md">{{ langService.t().contact.sentDesc }}</p>
+        </div>
+      } @else {
+        <form (ngSubmit)="onSubmit()" #contactForm="ngForm" class="space-y-6">
+          <div class="space-y-2">
+            <label class="font-label-md text-label-md text-on-surface-variant">{{ langService.t().contact.labelName }}</label>
+            <input name="name" [(ngModel)]="name" required #nameInput="ngModel"
+                   class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface" placeholder="Juan Perez" type="text"/>
+            @if (nameInput.invalid && (nameInput.dirty || nameInput.touched)) {
+              <p class="text-error text-xs">{{ langService.t().contact.validationName }}</p>
+            }
+          </div>
+          <div class="space-y-2">
+            <label class="font-label-md text-label-md text-on-surface-variant">{{ langService.t().contact.labelEmail }}</label>
+            <input name="email" [(ngModel)]="email" required email #emailInput="ngModel"
+                   class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface" placeholder="juan@ejemplo.com" type="email"/>
+            @if (emailInput.invalid && (emailInput.dirty || emailInput.touched)) {
+              <p class="text-error text-xs">{{ langService.t().contact.validationEmail }}</p>
+            }
+          </div>
+          <div class="space-y-2">
+            <label class="font-label-md text-label-md text-on-surface-variant">{{ langService.t().contact.labelMsg }}</label>
+            <textarea name="message" [(ngModel)]="message" required #messageInput="ngModel"
+                      class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface" [placeholder]="langService.t().contact.placeholderMsg" rows="4"></textarea>
+            @if (messageInput.invalid && (messageInput.dirty || messageInput.touched)) {
+              <p class="text-error text-xs">{{ langService.t().contact.validationMsg }}</p>
+            }
+          </div>
+          <button type="submit" [disabled]="contactForm.invalid"
+                  class="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
+            {{ langService.t().contact.btnSend }}
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</section>
