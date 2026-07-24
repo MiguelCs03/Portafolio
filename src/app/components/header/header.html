@@ -19,6 +19,16 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-4">
+      <!-- Cyber SFX Switcher Button -->
+      <button (click)="audioService.toggleSound()"
+              title="Efectos de sonido futuristas"
+              class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none"
+              [class.text-primary]="!audioService.isMuted()" [class.border-primary/40]="!audioService.isMuted()">
+        <span class="material-symbols-outlined text-[20px]">
+          {{ audioService.isMuted() ? 'volume_off' : 'volume_up' }}
+        </span>
+      </button>
+
       <!-- Language Switcher Button -->
       <button (click)="langService.toggleLanguage()"
               class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center font-label-md text-label-md text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none">

@@ -1,4 +1,5 @@
 import { Component, computed } from '@angular/core';
+import { ScrollReveal } from '../../directives/scroll-reveal';
 import { LanguageService } from '../../services/language';
 
 interface WorkExperience {
@@ -12,7 +13,7 @@ interface WorkExperience {
 
 @Component({
   selector: 'app-experience',
-  imports: [],
+  imports: [ScrollReveal],
   templateUrl: './experience.html',
   styleUrl: './experience.css',
 })
@@ -23,16 +24,16 @@ export class Experience {
     const t = this.langService.t();
     return [
       {
-        role: 'Full Stack Developer',
+        role: 'Backend Developer',
         company: 'MULTICENTER',
         period: t.experience.period1,
         description: t.experience.desc1,
-        technologies: ['Laravel', 'Vue 3', 'SQL Server'],
+        technologies: ['Laravel', 'SQL Server', 'REST APIs'],
         isCurrent: true,
       },
       {
-        role: 'Software Engineer',
-        company: 'INTECRAZ',
+        role: 'Full Stack Developer',
+        company: 'INTECRUZ',
         period: t.experience.period2,
         description: t.experience.desc2,
         technologies: ['Flutter', 'Node.js', 'Firebase'],

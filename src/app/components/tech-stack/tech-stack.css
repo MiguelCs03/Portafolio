@@ -1,16 +1,16 @@
 .tech-card {
   position: relative;
-  backdrop-filter: blur(16px);
-  background: var(--card-bg);
-  border: 1px solid var(--border-primary);
+  backdrop-filter: blur(20px);
+  background: linear-gradient(135deg, rgba(20, 24, 33, 0.6) 0%, rgba(10, 12, 18, 0.75) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px; /* 3xl */
   padding: 1.75rem;
-  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.1s ease-out;
+  transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .tech-card::before {
@@ -20,9 +20,9 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.6), transparent);
   transform: translateX(-100%);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tech-card:hover::before {
@@ -30,21 +30,22 @@
 }
 
 .tech-card.featured-card {
-  background: linear-gradient(135deg, rgba(0, 245, 212, 0.05) 0%, rgba(0, 210, 255, 0.02) 100%);
-  border-color: rgba(0, 245, 212, 0.2);
-  box-shadow: 0 10px 30px rgba(0, 245, 212, 0.05);
+  background: linear-gradient(135deg, rgba(0, 245, 212, 0.08) 0%, rgba(0, 210, 255, 0.03) 100%);
+  border-color: rgba(0, 245, 212, 0.35);
+  box-shadow: 0 12px 35px rgba(0, 245, 212, 0.08);
 }
 
 .tech-card:hover {
-  border-color: rgba(0, 245, 212, 0.45);
-  box-shadow: 0 20px 40px rgba(0, 245, 212, 0.1);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(0, 245, 212, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 245, 212, 0.16), 0 0 15px rgba(0, 245, 212, 0.08), inset 0 0 15px rgba(0, 245, 212, 0.05);
+  background: linear-gradient(135deg, rgba(25, 30, 42, 0.65) 0%, rgba(12, 15, 22, 0.8) 100%);
 }
 
 .tech-card.featured-card:hover {
-  border-color: rgba(0, 245, 212, 0.6);
-  box-shadow: 0 20px 40px rgba(0, 245, 212, 0.15);
-  background: linear-gradient(135deg, rgba(0, 245, 212, 0.08) 0%, rgba(0, 210, 255, 0.04) 100%);
+  border-color: rgba(0, 245, 212, 0.7);
+  box-shadow: 0 25px 45px rgba(0, 245, 212, 0.25), 0 0 25px rgba(0, 245, 212, 0.15), inset 0 0 20px rgba(0, 245, 212, 0.1);
+  background: linear-gradient(135deg, rgba(0, 245, 212, 0.15) 0%, rgba(0, 210, 255, 0.06) 100%);
 }
 
 /* 3D glare container style to ensure tilt works fine */

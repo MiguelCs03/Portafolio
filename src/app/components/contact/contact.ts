@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ScrollReveal } from '../../directives/scroll-reveal';
 import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-contact',
-  imports: [FormsModule],
+  imports: [FormsModule, ScrollReveal],
   templateUrl: './contact.html',
   styleUrl: './contact.css',
 })

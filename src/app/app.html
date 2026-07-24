@@ -1,10 +1,11 @@
 @if (showPreloader) {
-  <div class="fixed inset-0 bg-[#0c0e12] z-[9999] flex items-center justify-center transition-all duration-700 pointer-events-auto"
-       [class.opacity-0]="!isLoading" [class.pointer-events-none]="!isLoading">
+  <div class="fixed inset-0 bg-[#0c0e12] z-[9999] flex items-center justify-center transition-all duration-700"
+       [style.pointer-events]="isLoading ? 'auto' : 'none'"
+       [class.opacity-0]="!isLoading">
     <div class="text-center space-y-4 transition-all duration-500 scale-95"
          [class.opacity-0]="!isLoading" [class.scale-75]="!isLoading">
       <!-- Glow Logo Text -->
-      <h1 class="font-headline-xl text-5xl md:text-7xl font-bold tracking-[0.2em] text-white select-none filter drop-shadow-[0_0_20px_rgba(0,245,212,0.4)] animate-pulse">
+      <h1 class="font-headline-xl text-3xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] text-white select-none filter drop-shadow-[0_0_20px_rgba(0,245,212,0.4)] animate-pulse">
         M. CESARY
       </h1>
       <!-- Decorative futuristic neon line -->
@@ -20,6 +21,7 @@
   <app-neural-bg></app-neural-bg>
 
   <app-hero></app-hero>
+  <app-terminal></app-terminal>
   <app-tech-stack></app-tech-stack>
   <app-experience></app-experience>
   <app-projects></app-projects>

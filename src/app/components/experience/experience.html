@@ -1,12 +1,12 @@
 <section class="py-section-gap px-gutter max-w-4xl mx-auto" id="experience">
-  <h2 class="font-headline-lg text-headline-lg text-on-surface mb-16 text-center">{{ langService.t().experience.title }}</h2>
+  <h2 class="font-headline-lg text-3xl md:text-headline-lg text-on-surface mb-16 text-center">{{ langService.t().experience.title }}</h2>
   <div class="relative border-l-2 border-white/10 ml-6 space-y-16">
     @for (exp of experiences(); track exp.company) {
-      <div class="relative pl-12">
+      <div class="relative pl-12" appScrollReveal [revealDelay]="$index * 150">
         <div [class]="exp.isCurrent ? 'absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-primary glow-cyan' : 'absolute -left-[11px] top-0 w-5 h-5 rounded-full border-2 border-primary bg-surface'"></div>
         <div class="glass-card p-8 rounded-3xl">
           <div class="flex flex-col md:flex-row justify-between mb-4 flex-wrap gap-2">
-            <h3 class="font-headline-md text-headline-md text-on-surface">{{ exp.role }} - {{ exp.company }}</h3>
+            <h3 class="font-headline-md text-xl md:text-headline-md text-on-surface">{{ exp.role }} - {{ exp.company }}</h3>
             <span class="font-code-sm text-primary">{{ exp.period }}</span>
           </div>
           <p class="text-on-surface-variant font-body-md mb-6 leading-relaxed">

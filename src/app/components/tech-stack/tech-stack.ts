@@ -58,6 +58,8 @@ export class TechStack {
       isFeatured: true,
       skills: [
         { name: 'AWS Cloud', icon: 'devicon-amazonwebservices-original colored' },
+        { name: 'DigitalOcean', icon: 'devicon-digitalocean-original colored' },
+        { name: 'Linux', icon: 'devicon-linux-plain' },
         { name: 'AWS Lambdas', icon: 'devicon-amazonwebservices-plain colored' },
         { name: 'Edge Workers', icon: 'devicon-amazonwebservices-plain' }
       ]

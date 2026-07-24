@@ -15,7 +15,7 @@ const translations = {
       titleGlow: 'POTENCIADAS POR IA.',
       desc: 'Especialista en Laravel, Vue 3, Node.js & Flutter. Creando arquitecturas escalables con integración de IA para la próxima generación de software.',
       btnProjects: 'VER PROYECTOS',
-      btnHire: 'CONTRATAR'
+      btnHire: 'CONTÁCTAME'
     },
     tech: {
       title: 'Tech Stack',
@@ -23,17 +23,18 @@ const translations = {
     },
     experience: {
       title: 'Experiencia Profesional',
-      period1: '2022 - Presente',
-      desc1: 'Liderando la optimización de procesos internos y plataformas de e-commerce mediante arquitecturas escalables. Implementación de microservicios y mejora continua del rendimiento del sistema.',
-      period2: '2020 - 2022',
-      desc2: 'Desarrollo de soluciones personalizadas para clientes industriales, automatización de flujos de trabajo y creación de aplicaciones móviles de alto impacto.'
+      period1: '2026 - Presente',
+      desc1: 'Desarrollador Backend encargado del diseño y despliegue del nuevo módulo de Puntos de Fidelización de Clientes. Optimización de base de datos SQL Server y flujos transaccionales seguros.',
+      period2: '2025 - 2026',
+      desc2: 'Desarrollador Full Stack a cargo de la creación de soluciones de software de extremo a extremo, automatización de flujos de trabajo e integraciones de API modernas.'
     },
     projects: {
       title: 'Proyectos Destacados',
       desc: 'Sistemas escalables con enfoque en la experiencia de usuario.',
       detailsBtn: 'Ver Detalles',
       proj1Desc: 'Pest Control SaaS para gestión industrial avanzada con reportería en tiempo real.',
-      proj2Desc: 'Aplicación móvil nativa para la gestión de comunidades y fidelización de clientes.',
+      proj2WebDesc: 'Sistema de gestión web actualizado para administración de clientes, cobros y control de comunidad.',
+      proj2AppDesc: 'Aplicación móvil nativa para fidelización de clientes y gestión de comunidades, desarrollada en INTECRUZ.',
       proj3Desc: 'Entrenamiento asistido por IA con integración de LLMs para aprendizaje adaptativo.',
       proj4Desc: 'Ecosistema completo para clínicas veterinarias, control de stock y fichas clínicas.',
       proj5Desc: 'Sistema empresarial con biometría y reportes de geolocalización.'
@@ -70,7 +71,7 @@ const translations = {
       titleGlow: 'POWERED BY AI.',
       desc: 'Specialist in Laravel, Vue 3, Node.js & Flutter. Creating scalable architectures with AI integrations for the next software generation.',
       btnProjects: 'VIEW PROJECTS',
-      btnHire: 'HIRE ME'
+      btnHire: 'CONTACT ME'
     },
     tech: {
       title: 'Tech Stack',
@@ -78,17 +79,18 @@ const translations = {
     },
     experience: {
       title: 'Professional Experience',
-      period1: '2022 - Present',
-      desc1: 'Leading the optimization of internal processes and e-commerce platforms using scalable architectures. Microservices implementation and continuous system performance improvements.',
-      period2: '2020 - 2022',
-      desc2: 'Development of custom solutions for industrial clients, workflow automation, and creation of high-impact mobile applications.'
+      period1: '2026 - Present',
+      desc1: 'Backend Developer in charge of the design and deployment of the new Customer Loyalty Points module. Database optimization (SQL Server) and secure transactional workflows.',
+      period2: '2025 - 2026',
+      desc2: 'Full Stack Developer in charge of building end-to-end custom software solutions, workflow automation, and modern API integrations.'
     },
     projects: {
       title: 'Featured Projects',
       desc: 'Scalable systems with a focus on user experience.',
       detailsBtn: 'View Details',
       proj1Desc: 'Pest Control SaaS for advanced industrial management with real-time reporting.',
-      proj2Desc: 'Native mobile application for community management and client loyalty.',
+      proj2WebDesc: 'Updated web management system for customer administration, billing, and community control.',
+      proj2AppDesc: 'Native mobile application for customer loyalty and community management, built at INTECRUZ.',
       proj3Desc: 'AI-assisted coaching featuring LLM integration for adaptive learning.',
       proj4Desc: 'Complete ecosystem for veterinary clinics, stock control, and clinical charts.',
       proj5Desc: 'Enterprise system featuring biometrics and geolocation reports.'

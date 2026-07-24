@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { LanguageService } from '../../services/language';
+import { AudioService } from '../../services/audio-service';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,10 @@ export class Header implements OnInit {
   isDark = true;
   isMobileMenuOpen = false;
 
-  constructor(public langService: LanguageService) {}
+  constructor(
+    public langService: LanguageService,
+    public audioService: AudioService
+  ) {}
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
