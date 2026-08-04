@@ -14,8 +14,17 @@ export class Contact {
   email: string = '';
   message: string = '';
   submitted: boolean = false;
+  copiedEmail: boolean = false;
 
   constructor(public langService: LanguageService) {}
+
+  copyEmail() {
+    navigator.clipboard.writeText('mangelcs2003@gmail.com');
+    this.copiedEmail = true;
+    setTimeout(() => {
+      this.copiedEmail = false;
+    }, 2000);
+  }
 
   onSubmit() {
     if (this.name && this.email && this.message) {

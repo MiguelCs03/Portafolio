@@ -11,8 +11,19 @@ import { AudioService } from '../../services/audio-service';
   styleUrl: './hero.css',
 })
 export class Hero {
+  copiedEmail = false;
+
   constructor(
     public langService: LanguageService,
     public audioService: AudioService
   ) {}
+
+  copyEmail() {
+    this.audioService.playClick();
+    navigator.clipboard.writeText('mangelcs2003@gmail.com');
+    this.copiedEmail = true;
+    setTimeout(() => {
+      this.copiedEmail = false;
+    }, 2000);
+  }
 }

@@ -10,12 +10,13 @@ const translations = {
       resume: 'Resume'
     },
     hero: {
-      subtitle: 'MIGUEL ANGEL CESARY SORIOCO | INGENIERO DE SISTEMAS | FULL STACK DEVELOPER',
-      title: 'SOLUCIONES INTELIGENTES,',
-      titleGlow: 'POTENCIADAS POR IA.',
-      desc: 'Especialista en Laravel, Vue 3, Node.js & Flutter. Creando arquitecturas escalables con integración de IA para la próxima generación de software.',
-      btnProjects: 'VER PROYECTOS',
-      btnHire: 'CONTÁCTAME'
+      badge: 'MIGUEL ANGEL CESARY • FULL STACK & CLOUD ARCHITECT',
+      subtitle: 'INGENIERO DE SISTEMAS | ARQUITECTO BACKEND & DESARROLLADOR FULL STACK',
+      titleLine1: 'SOLUCIONES INTELIGENTES,',
+      titleGlow: 'ARQUITECTURAS ROBUSTAS.',
+      desc: 'Especializado en NestJS, Node.js, Laravel, AWS Serverless y Flutter. Diseño y desarrollo sistemas de alto rendimiento, microservicios e integración de IA.',
+      btnProjects: 'EXPLORAR PROYECTOS',
+      btnHire: 'CONTACTAR AHORA'
     },
     tech: {
       title: 'Tech Stack',
@@ -24,28 +25,29 @@ const translations = {
     experience: {
       title: 'Experiencia Profesional',
       period1: '2026 - Presente',
-      desc1: 'Desarrollador Backend encargado del diseño y despliegue del nuevo módulo de Puntos de Fidelización de Clientes. Optimización de base de datos SQL Server y flujos transaccionales seguros.',
+      desc1: 'Desarrollador Backend a cargo del diseño y despliegue del módulo transaccional de Multipuntos Multicenter. Microservicios con NestJS, AWS Lambdas y optimización de base de datos SQL Server.',
       period2: '2025 - 2026',
       desc2: 'Desarrollador Full Stack a cargo de la creación de soluciones de software de extremo a extremo, automatización de flujos de trabajo e integraciones de API modernas.'
     },
     projects: {
       title: 'Proyectos Destacados',
-      desc: 'Sistemas escalables con enfoque en la experiencia de usuario.',
+      desc: 'Sistemas transaccionales y escalables con enfoque en la experiencia de usuario.',
       detailsBtn: 'Ver Detalles',
+      previewBtn: 'Previsualizar',
       proj1Desc: 'Pest Control SaaS para gestión industrial avanzada con reportería en tiempo real.',
       proj2WebDesc: 'Sistema de gestión web actualizado para administración de clientes, cobros y control de comunidad.',
       proj2AppDesc: 'Aplicación móvil nativa para fidelización de clientes y gestión de comunidades, desarrollada en INTECRUZ.',
       proj3Desc: 'Entrenamiento asistido por IA con integración de LLMs para aprendizaje adaptativo.',
-      proj4Desc: 'Ecosistema completo para clínicas veterinarias, control de stock y fichas clínicas.',
+      proj4Desc: 'Ecosistema de microservicios transaccionales de lealtad y puntos para Multicenter.',
       proj5Desc: 'Sistema empresarial con biometría y reportes de geolocalización.'
     },
     contact: {
-      title: '¿Listo para el siguiente nivel?',
-      desc: 'Si buscas una arquitectura de software robusta o integrar IA en tus procesos, hablemos de cómo puedo ayudarte.',
+      title: '¿Listo para impulsar tu proyecto?',
+      desc: 'Hablemos sobre arquitecturas escalables, microservicios o soluciones con Inteligencia Artificial.',
       labelName: 'Nombre Completo',
       labelEmail: 'Correo Electrónico',
       labelMsg: 'Mensaje',
-      placeholderMsg: 'Cuéntame sobre tu proyecto...',
+      placeholderMsg: 'Cuéntame sobre tu proyecto o consulta...',
       btnSend: 'ENVIAR MENSAJE',
       validationName: 'El nombre es requerido.',
       validationEmail: 'Ingresa un correo electrónico válido.',
@@ -54,7 +56,7 @@ const translations = {
       sentDesc: 'Gracias por ponerte en contacto. Te responderé lo antes posible.'
     },
     footer: {
-      copyright: '© 2026 Miguel Angel Cesary Sorioco • Full Stack AI Engineer'
+      copyright: '© 2026 Miguel Angel Cesary Sorioco • Full Stack & Cloud Engineer'
     }
   },
   en: {
@@ -66,12 +68,13 @@ const translations = {
       resume: 'Resume'
     },
     hero: {
-      subtitle: 'MIGUEL ANGEL CESARY SORIOCO | SYSTEMS ENGINEER | FULL STACK DEVELOPER',
-      title: 'INTELLIGENT SOLUTIONS,',
-      titleGlow: 'POWERED BY AI.',
-      desc: 'Specialist in Laravel, Vue 3, Node.js & Flutter. Creating scalable architectures with AI integrations for the next software generation.',
-      btnProjects: 'VIEW PROJECTS',
-      btnHire: 'CONTACT ME'
+      badge: 'MIGUEL ANGEL CESARY • FULL STACK & CLOUD ARCHITECT',
+      subtitle: 'SYSTEMS ENGINEER | BACKEND ARCHITECT & FULL STACK DEVELOPER',
+      titleLine1: 'INTELLIGENT SOLUTIONS,',
+      titleGlow: 'ROBUST ARCHITECTURES.',
+      desc: 'Specialized in NestJS, Node.js, Laravel, AWS Serverless & Flutter. Designing high-performance scalable systems, microservices & AI integrations.',
+      btnProjects: 'EXPLORE PROJECTS',
+      btnHire: 'CONTACT NOW'
     },
     tech: {
       title: 'Tech Stack',
@@ -80,19 +83,20 @@ const translations = {
     experience: {
       title: 'Professional Experience',
       period1: '2026 - Present',
-      desc1: 'Backend Developer in charge of the design and deployment of the new Customer Loyalty Points module. Database optimization (SQL Server) and secure transactional workflows.',
+      desc1: 'Backend Developer in charge of designing and deploying the Multicenter Loyalty Points module. Microservices with NestJS, AWS Lambdas, and SQL Server database optimization.',
       period2: '2025 - 2026',
       desc2: 'Full Stack Developer in charge of building end-to-end custom software solutions, workflow automation, and modern API integrations.'
     },
     projects: {
       title: 'Featured Projects',
-      desc: 'Scalable systems with a focus on user experience.',
+      desc: 'Transactional and scalable systems with a focus on user experience.',
       detailsBtn: 'View Details',
+      previewBtn: 'Preview Website',
       proj1Desc: 'Pest Control SaaS for advanced industrial management with real-time reporting.',
       proj2WebDesc: 'Updated web management system for customer administration, billing, and community control.',
       proj2AppDesc: 'Native mobile application for customer loyalty and community management, built at INTECRUZ.',
       proj3Desc: 'AI-assisted coaching featuring LLM integration for adaptive learning.',
-      proj4Desc: 'Complete ecosystem for veterinary clinics, stock control, and clinical charts.',
+      proj4Desc: 'Loyalty points transactional microservices ecosystem for Multicenter.',
       proj5Desc: 'Enterprise system featuring biometrics and geolocation reports.'
     },
     contact: {

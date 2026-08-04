@@ -30,20 +30,31 @@ export class App implements OnInit {
   protected readonly title = signal('portfolio');
   isLoading = true;
   showPreloader = true;
+  progress = 0;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    // Start fading out at 150ms
+    // Increment progress counter smooth over 1.5s
+    const progressInterval = setInterval(() => {
+      if (this.progress < 100) {
+        this.progress += 5;
+        this.cdr.detectChanges();
+      }
+    }, 75);
+
+    // Start fading out preloader overlay at 1800ms (> 1.5s)
     setTimeout(() => {
+      clearInterval(progressInterval);
+      this.progress = 100;
       this.isLoading = false;
       this.cdr.detectChanges();
-    }, 150);
+    }, 1800);
 
-    // Completely unmount preloader container at 550ms (after 400ms transition)
+    // Completely unmount preloader container at 2500ms
     setTimeout(() => {
       this.showPreloader = false;
       this.cdr.detectChanges();
-    }, 550);
+    }, 2500);
   }
 }

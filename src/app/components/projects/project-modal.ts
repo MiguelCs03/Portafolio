@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AudioService } from '../../services/audio-service';
 import { LanguageService } from '../../services/language';
 
@@ -26,13 +27,19 @@ export class ProjectModal {
   @Input() project: ExtendedProject | null = null;
   @Output() close = new EventEmitter<void>();
 
+  showWebPreview = false;
+  isPreviewLoading = true;
+  safeLinkUrl: SafeResourceUrl | null = null;
+
   constructor(
     public audioService: AudioService,
-    public langService: LanguageService
+    public langService: LanguageService,
+    private sanitizer: DomSanitizer
   ) {}
 
   onClose() {
     this.audioService.playClick();
+    this.showWebPreview = false;
     this.close.emit();
   }
 
@@ -40,5 +47,23 @@ export class ProjectModal {
     if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
       this.onClose();
     }
+  }
+
+  openWebPreview() {
+    if (this.project?.link) {
+      this.audioService.playSwoosh();
+      this.safeLinkUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.project.link);
+      this.showWebPreview = true;
+      this.isPreviewLoading = true;
+
+      setTimeout(() => {
+        this.isPreviewLoading = false;
+      }, 1600);
+    }
+  }
+
+  closeWebPreview() {
+    this.audioService.playClick();
+    this.showWebPreview = false;
   }
 }

@@ -10,8 +10,8 @@
     @for (cat of categories; track cat.title; let idx = $index) {
       <div appThreeDTilt appScrollSpin
            [class]="(cat.isFeatured ? 'tech-card featured-card' : 'tech-card') + (idx === 4 ? ' sm:max-lg:col-span-2' : '')">
-        <div class="flex items-center gap-3 mb-5 border-b border-white/10 pb-3 app-parallax">
-          <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(0,245,212,0.15)]">
+        <div class="flex items-center gap-3 mb-5 border-b border-black/10 dark:border-white/10 pb-3 app-parallax">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(0,245,212,0.15)]">
             <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">{{ cat.icon }}</span>
           </div>
           <h3 class="font-headline-md text-[19px] font-bold text-on-surface tracking-tight">{{ cat.title }}</h3>
@@ -19,10 +19,10 @@
         <ul class="space-y-3.5 font-code-sm app-parallax">
           @for (skill of cat.skills; track skill.name) {
             <li class="flex items-center gap-3 group/item">
-              <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center group-hover/item:border-primary/30 group-hover/item:bg-primary/5 transition-all duration-300">
-                <i [class]="skill.icon + ' text-base transition-transform group-hover/item:scale-110 duration-300'"></i>
+              <div class="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/5 flex items-center justify-center group-hover/item:border-primary/40 group-hover/item:bg-primary/10 transition-all duration-300">
+                <i [class]="skill.icon + ' text-base transition-transform group-hover/item:scale-110 duration-300 text-on-surface'"></i>
               </div>
-              <span class="text-on-surface-variant group-hover/item:text-on-surface font-medium transition-colors">{{ skill.name }}</span>
+              <span class="text-on-surface-variant group-hover/item:text-primary font-medium transition-colors">{{ skill.name }}</span>
             </li>
           }
         </ul>

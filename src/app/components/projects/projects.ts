@@ -81,15 +81,18 @@ export class Projects {
         techStackBadges: ['React', 'Next.js', 'OpenAI API', 'Node.js', 'TypeScript']
       },
       {
-        title: 'Veterinaria SaaS',
-        category: 'SAAS',
-        categoryClass: 'bg-primary/90 text-on-primary',
+        title: 'Multipuntos Multicenter',
+        category: 'FINTECH & LOYALTY',
+        categoryClass: 'bg-primary/90 text-on-primary font-bold',
         description: t.projects.proj4Desc,
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDLCDlDB2qHMEazW8iWPqDmNlada46jl91L9ScPc3kibI1_ZeItAlB1Qs-szhtJyFO2bAGSV2usmCGALVNWithLaLqhh9He_xIvHB5UGM3JbRuvmpfYBv4zT2EMXel7Ydf4lWLRtwslHWQYSvPZJWyb0_HPeZ2O80l-RcVay5Jex40N4Q8t-hjDWNsKOOkfWIOwJMZcsq5-OrarqA932yxHgGdXIT01FyDsYMaKIAUwHM01CXHE35MmVj2X8Z34D1nWzOmnDL24ptk',
-        icons: ['pets'],
-        architectureDetails: 'Ecosistema integral de gestión médica veterianria con control de stock automatizado, recordatorios SMS/Correo y fichas clínicas electrónicas.',
-        keyFeatures: ['Fichas clínicas digitales', 'Gestión de inventarios', 'Agendamiento de citas', 'Reportería médica'],
-        techStackBadges: ['Laravel', 'Vue 3', 'MySQL', 'TailwindCSS']
+        imageUrl: 'https://images.unsplash.com/photo-1556742049-0a67e0e84b80?q=80&w=1200&auto=format&fit=crop',
+        icons: ['stars', 'account_balance_wallet'],
+        borderClass: 'border-primary/40',
+        isFeatured: true,
+        link: 'https://www.multicenter.com/multipuntos',
+        architectureDetails: 'Arquitectura distribuida en microservicios backend desarrollados con NestJS y despliegue serverless en AWS Lambdas para la gestión transaccional de puntos de fidelización, reglas dinámicas de conversión y conciliación.',
+        keyFeatures: ['Sistema de Acumulación y Canje de Puntos', 'Microservicios Backend en NestJS', 'Despliegue Serverless con AWS Lambdas', 'Reglas y Tasas de Conversión Dinámicas', 'Procesamiento Masivo y Conciliación'],
+        techStackBadges: ['NestJS', 'TypeScript', 'Node.js', 'AWS Lambdas', 'Docker', 'PostgreSQL', 'SQL Server']
       },
       {
         title: 'Control de Asistencia',
