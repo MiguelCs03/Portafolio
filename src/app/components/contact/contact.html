@@ -18,7 +18,7 @@
             </div>
           </a>
           <button (click)="copyEmail()" title="Copiar Correo"
-                  class="px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono text-on-surface hover:text-primary hover:border-primary transition-all flex items-center gap-1.5 flex-shrink-0">
+                  class="px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono text-on-surface hover:text-primary hover:border-primary transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-sm">{{ copiedEmail ? 'check' : 'content_copy' }}</span>
             <span class="hidden sm:inline">{{ copiedEmail ? '¡Copiado!' : 'Copiar' }}</span>
           </button>
@@ -55,45 +55,90 @@
         </a>
       </div>
     </div>
-    <div class="glass-card p-8 rounded-3xl" appScrollReveal [revealDelay]="200">
+
+    <!-- Contact Form Card -->
+    <div class="glass-card p-8 rounded-3xl relative overflow-hidden" appScrollReveal [revealDelay]="200">
       @if (submitted) {
-        <div class="space-y-4 text-center py-12 animate-pulse-slow">
-          <span class="material-symbols-outlined text-primary text-6xl">check_circle</span>
-          <h3 class="font-headline-md text-xl md:text-headline-md text-on-surface">{{ langService.t().contact.sentTitle }}</h3>
-          <p class="text-on-surface-variant font-body-md">{{ langService.t().contact.sentDesc }}</p>
+        <div class="space-y-6 text-center py-10 animate-fade-in">
+          <div class="w-20 h-20 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center mx-auto text-primary shadow-[0_0_30px_rgba(0,245,212,0.4)]">
+            <span class="material-symbols-outlined text-4xl">mark_email_read</span>
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-headline-md text-2xl font-bold text-on-surface">{{ langService.t().contact.sentTitle }}</h3>
+            <p class="text-on-surface-variant font-body-md max-w-sm mx-auto">{{ langService.t().contact.sentDesc }}</p>
+          </div>
+          <button (click)="resetForm()"
+                  class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-sm font-bold text-on-surface transition-all">
+            Enviar otro mensaje
+          </button>
         </div>
       } @else {
         <form (ngSubmit)="onSubmit()" #contactForm="ngForm" class="space-y-6">
+          @if (errorMessage) {
+            <div class="p-4 rounded-xl bg-error/10 border border-error/30 text-error text-xs font-mono flex items-start gap-2">
+              <span class="material-symbols-outlined text-base flex-shrink-0">error</span>
+              <div class="space-y-2">
+                <p>{{ errorMessage }}</p>
+                <a [href]="getMailtoLink()" class="inline-flex items-center gap-1 underline font-bold hover:text-white">
+                  Abrir correo en mi cliente <span class="material-symbols-outlined text-xs">open_in_new</span>
+                </a>
+              </div>
+            </div>
+          }
+
           <div class="space-y-2">
             <label class="font-label-md text-label-md text-on-surface-variant">{{ langService.t().contact.labelName }}</label>
-            <input name="name" [(ngModel)]="name" required #nameInput="ngModel"
-                   class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface" placeholder="Juan Perez" type="text"/>
+            <input name="name" [(ngModel)]="name" required #nameInput="ngModel" [disabled]="isSubmitting"
+                   class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface disabled:opacity-50" placeholder="Ej. Carlos Mendoza" type="text"/>
             @if (nameInput.invalid && (nameInput.dirty || nameInput.touched)) {
-              <p class="text-error text-xs">{{ langService.t().contact.validationName }}</p>
+              <p class="text-error text-xs flex items-center gap-1 mt-1">
+                <span class="material-symbols-outlined text-xs">warning</span> {{ langService.t().contact.validationName }}
+              </p>
             }
           </div>
+
           <div class="space-y-2">
             <label class="font-label-md text-label-md text-on-surface-variant">{{ langService.t().contact.labelEmail }}</label>
-            <input name="email" [(ngModel)]="email" required email #emailInput="ngModel"
-                   class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface" placeholder="juan@ejemplo.com" type="email"/>
+            <input name="email" [(ngModel)]="email" required email #emailInput="ngModel" [disabled]="isSubmitting"
+                   class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface disabled:opacity-50" placeholder="ejemplo@correo.com" type="email"/>
             @if (emailInput.invalid && (emailInput.dirty || emailInput.touched)) {
-              <p class="text-error text-xs">{{ langService.t().contact.validationEmail }}</p>
+              <p class="text-error text-xs flex items-center gap-1 mt-1">
+                <span class="material-symbols-outlined text-xs">warning</span> {{ langService.t().contact.validationEmail }}
+              </p>
             }
           </div>
+
           <div class="space-y-2">
             <label class="font-label-md text-label-md text-on-surface-variant">{{ langService.t().contact.labelMsg }}</label>
-            <textarea name="message" [(ngModel)]="message" required #messageInput="ngModel"
-                      class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface" [placeholder]="langService.t().contact.placeholderMsg" rows="4"></textarea>
+            <textarea name="message" [(ngModel)]="message" required #messageInput="ngModel" [disabled]="isSubmitting"
+                      class="w-full bg-black/5 border border-white/10 dark:bg-black/20 rounded-xl px-4 py-3 focus:border-primary focus:outline-none transition-colors text-on-surface disabled:opacity-50" [placeholder]="langService.t().contact.placeholderMsg" rows="4"></textarea>
             @if (messageInput.invalid && (messageInput.dirty || messageInput.touched)) {
-              <p class="text-error text-xs">{{ langService.t().contact.validationMsg }}</p>
+              <p class="text-error text-xs flex items-center gap-1 mt-1">
+                <span class="material-symbols-outlined text-xs">warning</span> {{ langService.t().contact.validationMsg }}
+              </p>
             }
           </div>
-          <button type="submit" [disabled]="contactForm.invalid"
-                  class="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
-            {{ langService.t().contact.btnSend }}
-          </button>
+
+          <div class="space-y-3 pt-2">
+            <button type="submit" [disabled]="contactForm.invalid || isSubmitting"
+                    class="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:shadow-[0_0_30px_rgba(0,245,212,0.4)] transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer">
+              @if (isSubmitting) {
+                <div class="w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></div>
+                <span>ENVIANDO...</span>
+              } @else {
+                <span class="material-symbols-outlined text-xl">send</span>
+                <span>{{ langService.t().contact.btnSend }}</span>
+              }
+            </button>
+
+            <a [href]="getMailtoLink()"
+               class="block text-center text-xs font-mono text-on-surface-variant hover:text-primary transition-colors py-1">
+              ¿Prefieres usar tu propia app de correo? Haz clic aquí
+            </a>
+          </div>
         </form>
       }
     </div>
   </div>
 </section>
+

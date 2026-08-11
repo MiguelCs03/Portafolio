@@ -24,9 +24,27 @@
         <!-- Modal Body Content -->
         <div class="p-6 sm:p-8 space-y-6 overflow-y-auto flex-grow">
           <div>
-            <h2 class="font-headline-lg text-2xl sm:text-3xl font-bold text-on-surface mb-2">{{ project.title }}</h2>
+            <h2 class="font-headline-lg text-2xl sm:text-3xl font-bold text-on-surface mb-2 flex items-center gap-2">
+              {{ project.title }}
+              @if (project.isPrivate) {
+                <span class="material-symbols-outlined text-amber-400 text-2xl" title="Empresa Privada">lock</span>
+              }
+            </h2>
             <p class="text-on-surface-variant font-body-md leading-relaxed">{{ project.description }}</p>
           </div>
+
+          <!-- Private Company System Notice Banner -->
+          @if (project.isPrivate) {
+            <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono flex items-start gap-3">
+              <span class="material-symbols-outlined text-amber-400 text-xl flex-shrink-0 mt-0.5">lock</span>
+              <div class="space-y-1">
+                <p class="font-bold uppercase tracking-wider text-amber-400">Desarrollo para Empresa Privada</p>
+                <p class="text-on-surface-variant text-xs leading-relaxed">
+                  {{ project.privateNote || 'Este proyecto fue desarrollado exclusivamente para una empresa privada con acuerdos de confidencialidad y acceso restringido.' }}
+                </p>
+              </div>
+            </div>
+          }
 
           @if (project.architectureDetails) {
             <div class="space-y-2 bg-black/5 dark:bg-white/5 p-4 rounded-2xl border border-black/10 dark:border-white/10">
@@ -69,20 +87,26 @@
 
         <!-- Modal Footer Actions -->
         <div class="p-4 sm:p-6 bg-[#090b0f] border-t border-white/10 flex flex-wrap gap-3 justify-between items-center flex-shrink-0">
-          <button (click)="onClose()" class="px-6 py-2.5 rounded-xl border border-white/10 text-on-surface-variant hover:text-on-surface text-sm font-bold transition-all">
+          <button (click)="onClose()" class="px-6 py-2.5 rounded-xl border border-white/10 text-on-surface-variant hover:text-on-surface text-sm font-bold transition-all cursor-pointer">
             Cerrar
           </button>
 
-          @if (project.link) {
+          @if (project.isPrivate) {
+            <div class="px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm">lock</span> Sistema Interno Privado
+            </div>
+          } @else if (project.link) {
             <div class="flex gap-2">
-              <button (click)="openWebPreview()"
-                      class="px-5 py-2.5 bg-primary/20 border border-primary/50 text-primary hover:bg-primary/30 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-base">preview</span> Previsualizar URL
-              </button>
+              @if (project.allowIframe) {
+                <button (click)="openWebPreview()"
+                        class="px-5 py-2.5 bg-primary/20 border border-primary/50 text-primary hover:bg-primary/30 rounded-xl text-sm font-bold transition-all flex items-center gap-2 cursor-pointer">
+                  <span class="material-symbols-outlined text-base">preview</span> Previsualizar en Vivo
+                </button>
+              }
 
               <a [href]="project.link" target="_blank"
-                 class="px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(0,245,212,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
-                Ver Sitio Web <span class="material-symbols-outlined text-base">open_in_new</span>
+                 class="px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(0,245,212,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
+                {{ project.linkText || 'Ver Sitio Web' }} <span class="material-symbols-outlined text-base">open_in_new</span>
               </a>
             </div>
           }

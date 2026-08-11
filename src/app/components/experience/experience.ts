@@ -24,11 +24,11 @@ export class Experience {
     const t = this.langService.t();
     return [
       {
-        role: 'Backend Developer',
+        role: 'Full Stack Developer',
         company: 'MULTICENTER',
         period: t.experience.period1,
         description: t.experience.desc1,
-        technologies: ['Laravel', 'SQL Server', 'REST APIs'],
+        technologies: ['NestJS', 'Angular', 'SQL Server', 'AWS Lambdas', 'REST APIs'],
         isCurrent: true,
       },
       {
@@ -36,7 +36,7 @@ export class Experience {
         company: 'INTECRUZ',
         period: t.experience.period2,
         description: t.experience.desc2,
-        technologies: ['Flutter', 'Node.js', 'Firebase'],
+        technologies: ['PHP', 'Laravel', 'Vue.js', 'React', 'Flutter'],
         isCurrent: false,
       }
     ];

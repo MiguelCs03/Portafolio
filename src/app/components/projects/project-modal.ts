@@ -12,7 +12,11 @@ export interface ExtendedProject {
   icons: string[];
   borderClass?: string;
   isFeatured?: boolean;
+  isPrivate?: boolean;
+  privateNote?: string;
   link?: string;
+  linkText?: string;
+  allowIframe?: boolean;
   architectureDetails?: string;
   keyFeatures?: string[];
   techStackBadges?: string[];
