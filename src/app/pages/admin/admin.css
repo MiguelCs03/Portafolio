@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  -webkit-box-shadow: 0 0 0 1000px #0b0d11 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Barras del gráfico horario */
+.group:hover > div {
+  filter: drop-shadow(0 0 8px rgba(0, 223, 193, 0.45));
+}

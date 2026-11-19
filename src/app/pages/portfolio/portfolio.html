@@ -1,0 +1,75 @@
+@if (showPreloader) {
+  <div
+    class="fixed inset-0 bg-[#07090e] z-[99999] flex flex-col items-center justify-center p-4 transition-all duration-700 select-none overflow-hidden"
+    [style.pointer-events]="isLoading ? 'auto' : 'none'"
+    [class.opacity-0]="!isLoading"
+  >
+    <!-- Cyber Background Radial Glow -->
+    <div
+      class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,245,212,0.12)_0%,transparent_70%)] pointer-events-none"
+    ></div>
+
+    <div
+      class="relative z-10 flex flex-col items-center max-w-md w-full text-center space-y-6 transition-all duration-500"
+      [class.opacity-0]="!isLoading"
+      [class.scale-90]="!isLoading"
+    >
+      <!-- Futuristic Monogram Badge -->
+      <div
+        class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border-2 border-primary/60 flex items-center justify-center shadow-[0_0_50px_rgba(0,245,212,0.35)]"
+      >
+        <span
+          class="font-headline-xl text-3xl sm:text-4xl font-extrabold text-primary tracking-tighter glow-cyan"
+          >MC</span
+        >
+      </div>
+
+      <!-- Main Name Reveal -->
+      <div class="space-y-2">
+        <h1
+          class="font-headline-xl text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-[0.16em] text-white select-none filter drop-shadow-[0_0_30px_rgba(0,245,212,0.6)] animate-pulse"
+        >
+          M.Cesary
+        </h1>
+        <p
+          class="font-code-sm text-xs sm:text-sm text-primary tracking-[0.3em] uppercase font-bold opacity-90"
+        >
+          Full Stack & Cloud Engineer
+        </p>
+      </div>
+
+      <!-- Responsive Loading Bar & Percentage -->
+      <div class="w-full max-w-xs space-y-2 pt-2">
+        <div
+          class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden p-0.5 border border-primary/30"
+        >
+          <div
+            class="h-full bg-gradient-to-r from-primary via-[#00d2ff] to-[#a855f7] rounded-full transition-all duration-150 ease-out shadow-[0_0_12px_rgba(0,245,212,0.8)]"
+            [style.width.%]="progress"
+          ></div>
+        </div>
+        <div
+          class="flex justify-between items-center text-[11px] font-mono text-on-surface-variant px-1"
+        >
+          <span class="text-primary font-bold">CARGANDO SISTEMA</span>
+          <span class="text-white font-bold">{{ progress }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<app-header></app-header>
+<main class="relative">
+  <!-- BACKGROUND ATMOSPHERE -->
+  <div class="fixed inset-0 pointer-events-none neural-bg -z-10"></div>
+  <app-neural-bg></app-neural-bg>
+
+  <app-hero></app-hero>
+  <app-terminal></app-terminal>
+  <app-tech-stack></app-tech-stack>
+  <app-experience></app-experience>
+  <app-projects></app-projects>
+  <app-contact></app-contact>
+  <app-footer></app-footer>
+</main>

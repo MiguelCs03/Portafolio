@@ -1,0 +1,821 @@
+<div class="min-h-screen bg-surface text-on-surface font-body-md pb-16">
+  <!-- ============================================================ SIN CONFIGURAR -->
+  @if (!configured) {
+    <div class="min-h-screen flex items-center justify-center p-gutter">
+      <div class="glass-card max-w-2xl w-full rounded-3xl p-8 sm:p-10 space-y-6 border-primary/30">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/40 flex items-center justify-center text-primary"
+          >
+            <span class="material-symbols-outlined">monitoring</span>
+          </div>
+          <div>
+            <p class="font-mono text-xs text-primary tracking-[0.3em] uppercase">
+              MACS // Analytics
+            </p>
+            <h1 class="text-2xl font-bold">Falta conectar la base de datos</h1>
+          </div>
+        </div>
+
+        <p class="text-on-surface-variant leading-relaxed">
+          El panel ya está construido, pero necesita un proyecto de Supabase para guardar y leer las
+          visitas. Sigue estos pasos (5 minutos):
+        </p>
+
+        <ol class="space-y-3 text-sm text-on-surface-variant list-decimal list-inside">
+          <li>
+            Crea un proyecto gratis en
+            <a
+              class="text-primary underline"
+              href="https://supabase.com"
+              target="_blank"
+              rel="noopener"
+              >supabase.com</a
+            >.
+          </li>
+          <li>
+            Abre el <strong class="text-on-surface">SQL Editor</strong> y ejecuta el archivo
+            <code class="text-primary">supabase/schema.sql</code> del repo.
+          </li>
+          <li>
+            En <strong class="text-on-surface">Authentication → Users</strong> crea tu usuario con
+            tu correo y contraseña.
+          </li>
+          <li>
+            En <strong class="text-on-surface">Project Settings → API</strong> copia la URL y la
+            clave <code class="text-primary">anon public</code>.
+          </li>
+          <li>
+            Pégalas en <code class="text-primary">src/environments/environment.ts</code> y vuelve a
+            desplegar.
+          </li>
+        </ol>
+
+        <pre
+          class="bg-black/40 border border-white/10 rounded-2xl p-4 text-xs overflow-x-auto text-primary/90"
+        >
+export const environment = &#123;
+  production: false,
+  supabaseUrl: 'https://TU-PROYECTO.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOi...'
+&#125;;</pre>
+
+        <p class="text-xs text-on-surface-variant">
+          La clave <code>anon</code> es pública por diseño. Las políticas RLS del archivo SQL
+          impiden que nadie pueda leer las estadísticas sin iniciar sesión, y solo permiten insertar
+          visitas.
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- ============================================================ LOGIN -->
+  @else if (!session()) {
+    <div class="min-h-screen flex items-center justify-center p-gutter relative overflow-hidden">
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(0,245,212,0.10),transparent_60%)] pointer-events-none"
+      ></div>
+
+      <form
+        (ngSubmit)="login()"
+        class="glass-card relative z-10 max-w-md w-full rounded-3xl p-8 space-y-6 border-primary/30"
+      >
+        <div class="text-center space-y-3">
+          <div
+            class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-primary/25 to-transparent border-2 border-primary/50 flex items-center justify-center shadow-[0_0_40px_rgba(0,245,212,0.3)]"
+          >
+            <span class="text-primary font-extrabold text-xl tracking-tighter">MC</span>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] text-primary tracking-[0.35em] uppercase">
+              Acceso privado
+            </p>
+            <h1 class="text-2xl font-bold mt-1">Panel de estadísticas</h1>
+            <p class="text-xs text-on-surface-variant mt-1">
+              Solo el propietario puede ver estos datos.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <label class="block space-y-1.5">
+            <span class="text-xs font-mono uppercase tracking-wider text-on-surface-variant"
+              >Correo</span
+            >
+            <input
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              autocomplete="username"
+              placeholder="tu@correo.com"
+              class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(0,245,212,0.12)] transition-all"
+            />
+          </label>
+
+          <label class="block space-y-1.5">
+            <span class="text-xs font-mono uppercase tracking-wider text-on-surface-variant"
+              >Contraseña</span
+            >
+            <div class="relative">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                name="password"
+                [(ngModel)]="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 pr-12 text-sm outline-none focus:border-primary/60 focus:shadow-[0_0_0_3px_rgba(0,245,212,0.12)] transition-all"
+              />
+              <button
+                type="button"
+                (click)="showPassword = !showPassword"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors"
+                [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              >
+                <span class="material-symbols-outlined text-xl">{{
+                  showPassword ? 'visibility_off' : 'visibility'
+                }}</span>
+              </button>
+            </div>
+          </label>
+        </div>
+
+        @if (loginError()) {
+          <div
+            class="flex items-start gap-2 text-xs text-red-300 bg-red-500/10 border border-red-500/30 rounded-xl p-3"
+          >
+            <span class="material-symbols-outlined text-base">error</span>
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="authBusy()"
+          class="w-full bg-primary text-on-primary font-bold rounded-xl py-3.5 hover:shadow-[0_0_30px_rgba(0,245,212,0.45)] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined text-lg">lock_open</span>
+          {{ authBusy() ? 'Verificando...' : 'Entrar al panel' }}
+        </button>
+
+        <p class="text-[11px] text-center text-on-surface-variant">
+          Si olvidaste la contraseña, restablécala desde Supabase → Authentication → Users.
+        </p>
+      </form>
+    </div>
+  }
+
+  <!-- ============================================================ DASHBOARD -->
+  @else {
+    <header class="sticky top-0 z-40 border-b border-white/10 bg-surface/85 backdrop-blur-xl">
+      <div
+        class="max-w-container-max mx-auto px-gutter py-4 flex flex-wrap items-center gap-3 justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-xl bg-primary/15 border border-primary/40 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-primary">monitoring</span>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] text-primary tracking-[0.3em] uppercase leading-none">
+              MACS // Analytics
+            </p>
+            <h1 class="text-lg font-bold leading-tight">Panel del portafolio</h1>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <span
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-[11px] font-mono font-bold text-primary"
+          >
+            <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+            {{ liveNow() }} en vivo
+          </span>
+
+          <div class="flex items-center rounded-xl border border-white/10 overflow-hidden">
+            @for (range of ranges; track range) {
+              <button
+                (click)="setRange(range)"
+                class="px-3 py-2 text-xs font-mono transition-colors"
+                [class.bg-primary]="days() === range"
+                [class.text-on-primary]="days() === range"
+                [class.font-bold]="days() === range"
+                [class.text-on-surface-variant]="days() !== range"
+              >
+                {{ range }}d
+              </button>
+            }
+          </div>
+
+          <button
+            (click)="refresh()"
+            [disabled]="loading()"
+            class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all disabled:opacity-50"
+            title="Actualizar datos"
+          >
+            <span class="material-symbols-outlined text-lg" [class.animate-spin]="loading()"
+              >refresh</span
+            >
+          </button>
+
+          <button
+            (click)="logout()"
+            class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-red-300 hover:border-red-400/40 transition-all"
+            title="Cerrar sesión"
+          >
+            <span class="material-symbols-outlined text-lg">logout</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-container-max mx-auto px-gutter py-8 space-y-6">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold">Resumen de los últimos {{ days() }} días</h2>
+          <p class="text-sm text-on-surface-variant mt-1">
+            {{ updatedAt() ? (updatedAt() | date: 'dd/MM/yyyy HH:mm') : 'Cargando...' }}
+            · <span class="text-on-surface-variant/70">se actualiza solo cada 60 s</span>
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+          <span class="material-symbols-outlined text-base">visibility</span>
+          {{ totalVisits() }} visitas · {{ uniqueVisitors() }} personas
+        </div>
+      </div>
+
+      @if (error()) {
+        <div
+          class="flex items-start gap-2 text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-2xl p-4"
+        >
+          <span class="material-symbols-outlined text-lg">error</span>
+          <div>
+            <p class="font-bold">No se pudieron cargar las estadísticas</p>
+            <p class="text-xs text-red-200/80 mt-1">{{ error() }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- KPIs -->
+      <section class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-primary/20">
+          <div class="flex items-center justify-between">
+            <span class="material-symbols-outlined text-primary text-xl">group</span>
+            <span
+              class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md"
+              [style.color]="growth() >= 0 ? '#00dfc1' : '#fca5a5'"
+              [style.background]="growth() >= 0 ? 'rgba(0,223,193,0.10)' : 'rgba(239,68,68,0.10)'"
+              >{{ growth() >= 0 ? '+' : '' }}{{ growth() }}%</span
+            >
+          </div>
+          <p class="text-3xl font-bold font-mono mt-3">{{ uniqueVisitors() }}</p>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-1">
+            Visitantes únicos
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-secondary/20">
+          <div class="flex items-center justify-between">
+            <span class="material-symbols-outlined text-secondary text-xl">touch_app</span>
+            <span class="text-[10px] font-mono text-on-surface-variant"
+              >{{ previousVisits().length }} antes</span
+            >
+          </div>
+          <p class="text-3xl font-bold font-mono mt-3">{{ totalVisits() }}</p>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-1">
+            Visitas totales
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-white/10">
+          <span class="material-symbols-outlined text-on-surface-variant text-xl">devices</span>
+          <p class="text-3xl font-bold font-mono mt-3">{{ totalSessions() }}</p>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-1">Sesiones</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-white/10">
+          <span class="material-symbols-outlined text-on-surface-variant text-xl">today</span>
+          <p class="text-3xl font-bold font-mono mt-3">{{ todayVisits() }}</p>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-1">
+            Visitas hoy
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-white/10">
+          <span class="material-symbols-outlined text-on-surface-variant text-xl">timer</span>
+          <p class="text-2xl sm:text-3xl font-bold font-mono mt-3">
+            {{ formatDuration(avgDuration()) }}
+          </p>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-1">
+            Tiempo medio
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-white/10">
+          <span class="material-symbols-outlined text-on-surface-variant text-xl">south</span>
+          <p class="text-3xl font-bold font-mono mt-3">{{ avgScroll() }}%</p>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-1">
+            Scroll promedio
+          </p>
+        </div>
+      </section>
+
+      <!-- CHART -->
+      <section class="glass-card rounded-3xl p-5 sm:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-bold text-lg">Visitas por día</h3>
+            <p class="text-xs text-on-surface-variant">
+              Línea cian: visitas · Puntos azules: personas únicas
+            </p>
+          </div>
+          <div class="flex items-center gap-4 text-[11px] font-mono text-on-surface-variant">
+            <span class="flex items-center gap-1.5"
+              ><span class="w-2.5 h-2.5 rounded-full bg-primary"></span>Visitas</span
+            >
+            <span class="flex items-center gap-1.5"
+              ><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>Únicos</span
+            >
+          </div>
+        </div>
+
+        @if (totalVisits() === 0) {
+          <div
+            class="h-52 flex flex-col items-center justify-center text-center gap-2 text-on-surface-variant"
+          >
+            <span class="material-symbols-outlined text-4xl text-primary/40">insights</span>
+            <p class="text-sm">Aún no hay datos en este periodo.</p>
+            <p class="text-xs">
+              Comparte tu portafolio y las visitas aparecerán aquí automáticamente.
+            </p>
+          </div>
+        } @else {
+          <svg
+            [attr.viewBox]="'0 0 ' + chart().width + ' ' + chart().height"
+            class="w-full h-52 sm:h-60 overflow-visible"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Gráfico de visitas por día"
+          >
+            <defs>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00dfc1" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#00dfc1" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#00d2ff" />
+                <stop offset="100%" stop-color="#00dfc1" />
+              </linearGradient>
+            </defs>
+
+            @for (line of [0.25, 0.5, 0.75]; track line) {
+              <line
+                [attr.x1]="chart().paddingX"
+                [attr.x2]="chart().width - chart().paddingX"
+                [attr.y1]="chart().paddingY + (chart().height - chart().paddingY * 2) * line"
+                [attr.y2]="chart().paddingY + (chart().height - chart().paddingY * 2) * line"
+                stroke="rgba(255,255,255,0.08)"
+                stroke-dasharray="4 6"
+              />
+            }
+
+            <path [attr.d]="chart().area" fill="url(#areaGradient)" />
+            <path
+              [attr.d]="chart().line"
+              fill="none"
+              stroke="url(#lineGradient)"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            @for (point of chart().points; track point.label) {
+              <circle
+                [attr.cx]="point.x"
+                [attr.cy]="point.y"
+                r="3.5"
+                fill="#00dfc1"
+                stroke="#07090e"
+                stroke-width="2"
+              >
+                <title>
+                  {{ point.label }}: {{ point.visits }} visitas, {{ point.unique }} únicos
+                </title>
+              </circle>
+              @if (point.unique > 0) {
+                <circle
+                  [attr.cx]="point.x"
+                  [attr.cy]="
+                    chart().height -
+                    chart().paddingY -
+                    (point.unique / chart().max) * (chart().height - chart().paddingY * 2)
+                  "
+                  r="2"
+                  fill="#00d2ff"
+                  opacity="0.8"
+                />
+              }
+            }
+          </svg>
+
+          <div class="flex justify-between mt-2 text-[10px] font-mono text-on-surface-variant/70">
+            @for (point of chart().points; track point.label) {
+              @if ($index % chart().labelEvery === 0) {
+                <span>{{ point.label }}</span>
+              }
+            }
+          </div>
+        }
+      </section>
+
+      <!-- INSIGHTS -->
+      <section class="glass-card rounded-3xl p-5 sm:p-7 border-primary/25 bg-primary/[0.03]">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-primary">lightbulb</span>
+          <h3 class="font-bold text-lg">Qué puedes mejorar</h3>
+          <span
+            class="text-[10px] font-mono uppercase tracking-wider text-primary/70 border border-primary/30 rounded-full px-2 py-0.5"
+            >Automático</span
+          >
+        </div>
+        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-2.5">
+          @for (tip of insights(); track tip) {
+            <li class="flex items-start gap-2 text-sm text-on-surface-variant leading-relaxed">
+              <span class="text-primary mt-0.5">▹</span>
+              <span>{{ tip }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <!-- AUDIENCIA -->
+      <section class="grid lg:grid-cols-2 gap-4 sm:gap-6">
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">public</span>
+            <h3 class="font-bold">Países</h3>
+          </div>
+          @if (countries().length === 0) {
+            <p class="text-sm text-on-surface-variant py-6 text-center">Sin datos todavía.</p>
+          } @else {
+            <ul class="space-y-3">
+              @for (country of countries(); track country.label) {
+                <li>
+                  <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="flex items-center gap-2"
+                      ><span class="text-base">{{ country.flag }}</span
+                      >{{ country.label }}</span
+                    >
+                    <span class="font-mono text-xs text-on-surface-variant"
+                      >{{ country.count }} · {{ country.pct }}%</span
+                    >
+                  </div>
+                  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-primary to-secondary"
+                      [style.width.%]="country.pct"
+                    ></div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">devices</span>
+            <h3 class="font-bold">Dispositivos</h3>
+          </div>
+
+          @if (devices().length === 0) {
+            <p class="text-sm text-on-surface-variant py-6 text-center">Sin datos todavía.</p>
+          } @else {
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+              <div
+                class="relative w-36 h-36 shrink-0 rounded-full"
+                [style.background]="deviceBar()"
+              >
+                <div
+                  class="absolute inset-[18%] rounded-full bg-surface-container-lowest flex flex-col items-center justify-center border border-white/10"
+                >
+                  <span class="text-2xl font-bold font-mono">{{ totalVisits() }}</span>
+                  <span class="text-[10px] uppercase tracking-wider text-on-surface-variant"
+                    >visitas</span
+                  >
+                </div>
+              </div>
+
+              <ul class="flex-1 w-full space-y-2.5">
+                @for (device of devices(); track device.label) {
+                  <li class="flex items-center justify-between text-sm">
+                    <span class="flex items-center gap-2">
+                      <span
+                        class="w-2.5 h-2.5 rounded-full"
+                        [style.background]="device.color"
+                      ></span>
+                      {{ device.label }}
+                    </span>
+                    <span class="font-mono text-xs text-on-surface-variant"
+                      >{{ device.count }} · {{ device.pct }}%</span
+                    >
+                  </li>
+                }
+              </ul>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-6 pt-4 border-t border-white/5">
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                  Navegadores
+                </p>
+                @for (browser of browsers().slice(0, 3); track browser.label) {
+                  <p class="text-xs flex justify-between">
+                    <span>{{ browser.label }}</span
+                    ><span class="font-mono text-on-surface-variant">{{ browser.pct }}%</span>
+                  </p>
+                }
+              </div>
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mb-1.5">
+                  Idioma
+                </p>
+                @for (language of languages(); track language.label) {
+                  <p class="text-xs flex justify-between">
+                    <span>{{ language.label }}</span
+                    ><span class="font-mono text-on-surface-variant">{{ language.pct }}%</span>
+                  </p>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">share</span>
+            <h3 class="font-bold">De dónde llegan</h3>
+          </div>
+          @if (referrers().length === 0) {
+            <p class="text-sm text-on-surface-variant py-6 text-center">Sin datos todavía.</p>
+          } @else {
+            <ul class="space-y-3">
+              @for (referrer of referrers(); track referrer.label) {
+                <li>
+                  <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="truncate pr-3">{{ referrer.label }}</span>
+                    <span class="font-mono text-xs text-on-surface-variant shrink-0"
+                      >{{ referrer.count }} · {{ referrer.pct }}%</span
+                    >
+                  </div>
+                  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-secondary to-[#a855f7]"
+                      [style.width.%]="referrer.pct"
+                    ></div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">ads_click</span>
+            <h3 class="font-bold">Salidas y enlaces</h3>
+            <span class="text-[10px] text-on-surface-variant">(GitHub, LinkedIn, demos...)</span>
+          </div>
+          @if (outbound().length === 0) {
+            <p class="text-sm text-on-surface-variant py-6 text-center">
+              Sin clics externos todavía.
+            </p>
+          } @else {
+            <ul class="space-y-3">
+              @for (item of outbound(); track item.label) {
+                <li>
+                  <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="truncate pr-3">{{ item.label }}</span>
+                    <span class="font-mono text-xs text-on-surface-variant shrink-0"
+                      >{{ item.count }} · {{ item.pct }}%</span
+                    >
+                  </div>
+                  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-primary to-secondary"
+                      [style.width.%]="item.pct"
+                    ></div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </section>
+
+      <!-- ENGAGEMENT -->
+      <section class="grid lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">folder_open</span>
+            <h3 class="font-bold">Proyectos más abiertos</h3>
+          </div>
+          @if (projects().length === 0) {
+            <p class="text-sm text-on-surface-variant py-6 text-center">
+              Nadie ha abierto un proyecto todavía.
+            </p>
+          } @else {
+            <ol class="space-y-3">
+              @for (project of projects(); track project.label) {
+                <li class="flex items-center gap-3">
+                  <span
+                    class="w-6 h-6 rounded-lg bg-primary/10 border border-primary/30 text-primary text-[11px] font-mono font-bold flex items-center justify-center shrink-0"
+                    >{{ $index + 1 }}</span
+                  >
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium truncate">{{ project.label }}</p>
+                    <div class="h-1 rounded-full bg-white/5 mt-1 overflow-hidden">
+                      <div
+                        class="h-full bg-primary/70 rounded-full"
+                        [style.width.%]="project.pct"
+                      ></div>
+                    </div>
+                  </div>
+                  <span class="text-xs font-mono text-on-surface-variant shrink-0">{{
+                    project.count
+                  }}</span>
+                </li>
+              }
+            </ol>
+          }
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">vertical_align_bottom</span>
+            <h3 class="font-bold">Secciones vistas</h3>
+          </div>
+          @if (sections().length === 0) {
+            <p class="text-sm text-on-surface-variant py-6 text-center">
+              Sin datos de scroll todavía.
+            </p>
+          } @else {
+            <ul class="space-y-3">
+              @for (section of sections(); track section.label) {
+                <li>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span>{{ section.label }}</span>
+                    <span class="font-mono text-xs text-on-surface-variant"
+                      >{{ section.count }} · {{ section.pct }}%</span
+                    >
+                  </div>
+                  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-[#a855f7] to-secondary"
+                      [style.width.%]="section.pct"
+                    ></div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 sm:p-7">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary">conversion_path</span>
+            <h3 class="font-bold">Conversión</h3>
+          </div>
+          <ul class="space-y-3">
+            @for (item of conversions(); track item.label) {
+              <li
+                class="flex items-center justify-between gap-3 pb-3 border-b border-white/5 last:border-0 last:pb-0"
+              >
+                <div class="min-w-0">
+                  <p class="text-sm">{{ item.label }}</p>
+                  <p class="text-[10px] text-on-surface-variant">{{ item.hint }}</p>
+                </div>
+                <span class="text-xl font-bold font-mono text-primary shrink-0"
+                  >{{ item.value }}{{ item.suffix ?? '' }}</span
+                >
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- HORAS -->
+      <section class="glass-card rounded-3xl p-5 sm:p-7">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-outlined text-primary">schedule</span>
+          <h3 class="font-bold">Mejores horas para publicar</h3>
+          <span class="text-[10px] text-on-surface-variant">(hora local del visitante)</span>
+        </div>
+        <div class="flex items-end gap-1 h-28">
+          @for (hour of hourly(); track hour.hour) {
+            <div class="flex-1 h-full flex items-end group relative">
+              <div
+                class="w-full rounded-t bg-gradient-to-t from-primary/30 to-primary transition-all group-hover:from-secondary/50 group-hover:to-secondary"
+                [style.height.%]="barHeight(hour.count, hour.pct)"
+                [title]="hour.hour + ':00 — ' + hour.count + ' visitas'"
+              ></div>
+            </div>
+          }
+        </div>
+        <div class="flex justify-between mt-2 text-[10px] font-mono text-on-surface-variant/70">
+          <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
+        </div>
+      </section>
+
+      <!-- RECIENTES -->
+      <section class="glass-card rounded-3xl overflow-hidden">
+        <div class="p-5 sm:p-7 flex items-center justify-between gap-3 border-b border-white/5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">history</span>
+            <h3 class="font-bold">Visitas recientes</h3>
+          </div>
+          <span class="text-[11px] font-mono text-on-surface-variant"
+            >últimas {{ recentVisits().length }}</span
+          >
+        </div>
+
+        @if (recentVisits().length === 0) {
+          <div class="p-10 text-center text-sm text-on-surface-variant">
+            Todavía no hay visitas registradas.
+          </div>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[720px]">
+              <thead
+                class="text-[10px] uppercase tracking-wider text-on-surface-variant/70 bg-white/[0.02]"
+              >
+                <tr>
+                  <th class="text-left font-medium px-5 py-3">Cuándo</th>
+                  <th class="text-left font-medium px-3 py-3">País</th>
+                  <th class="text-left font-medium px-3 py-3">Dispositivo</th>
+                  <th class="text-left font-medium px-3 py-3">Navegador</th>
+                  <th class="text-left font-medium px-3 py-3">Origen</th>
+                  <th class="text-right font-medium px-3 py-3">Duración</th>
+                  <th class="text-right font-medium px-5 py-3">Scroll</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (visit of recentVisits(); track trackVisit($index, visit)) {
+                  <tr class="border-t border-white/5 hover:bg-white/[0.025] transition-colors">
+                    <td class="px-5 py-3 whitespace-nowrap">
+                      <p class="text-xs">{{ formatDate(visit.created_at) }}</p>
+                      <p class="text-[10px] text-on-surface-variant/70">
+                        {{ relativeTime(visit.created_at) }}
+                      </p>
+                    </td>
+                    <td class="px-3 py-3 whitespace-nowrap">
+                      <span class="text-base mr-1">{{ flag(visit.country_code ?? '') }}</span>
+                      <span class="text-xs">{{
+                        visit.country_name ?? visit.country_code ?? 'Desconocido'
+                      }}</span>
+                    </td>
+                    <td class="px-3 py-3 whitespace-nowrap">
+                      <span
+                        class="inline-flex items-center gap-1.5 text-xs text-on-surface-variant"
+                      >
+                        <span class="material-symbols-outlined text-sm">{{
+                          deviceIcon(visit.device_type)
+                        }}</span>
+                        {{ deviceLabel(visit.device_type) }}
+                      </span>
+                    </td>
+                    <td class="px-3 py-3 text-xs text-on-surface-variant whitespace-nowrap">
+                      {{ visit.browser ?? '—' }} · {{ visit.os ?? '—' }}
+                    </td>
+                    <td class="px-3 py-3 text-xs text-on-surface-variant max-w-[180px] truncate">
+                      {{ visit.referrer_host ?? 'Directo' }}
+                    </td>
+                    <td class="px-3 py-3 text-right font-mono text-xs text-primary">
+                      {{ formatDuration(visit.duration_seconds) }}
+                    </td>
+                    <td class="px-5 py-3 text-right font-mono text-xs">
+                      {{ visit.scroll_depth }}%
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+
+      <footer
+        class="flex flex-wrap items-center justify-between gap-3 text-[11px] text-on-surface-variant/70 pt-2"
+      >
+        <p class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-primary/70">verified_user</span>
+          Datos privados protegidos con Supabase RLS. Sesión: {{ session()?.email }}
+        </p>
+        <p>
+          Para excluir tus propias visitas abre
+          <code class="text-primary/80">/?ignore-analytics=1</code> una vez en tu navegador.
+        </p>
+      </footer>
+    </main>
+  }
+</div>

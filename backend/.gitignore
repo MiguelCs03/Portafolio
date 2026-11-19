@@ -1,0 +1,10 @@
+# Dependencies & build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Environment & local tools
+.env
+.env.*
+!.env.example
+.neon

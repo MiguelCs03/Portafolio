@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { LanguageService } from '../../services/language';
 import { AudioService } from '../../services/audio-service';
+import { AnalyticsService } from '../../services/analytics';
 
 @Component({
   selector: 'app-header',
@@ -15,8 +16,14 @@ export class Header implements OnInit {
 
   constructor(
     public langService: LanguageService,
-    public audioService: AudioService
+    public audioService: AudioService,
+    private analytics: AnalyticsService,
   ) {}
+
+  switchLanguage() {
+    this.langService.toggleLanguage();
+    this.analytics.track('language_toggle', this.langService.currentLang());
+  }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;

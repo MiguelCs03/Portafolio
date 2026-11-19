@@ -30,7 +30,7 @@
       </button>
 
       <!-- Language Switcher Button -->
-      <button (click)="langService.toggleLanguage()"
+      <button (click)="switchLanguage()"
               class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center font-label-md text-label-md text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all select-none">
         {{ langService.currentLang() === 'es' ? 'EN' : 'ES' }}
       </button>

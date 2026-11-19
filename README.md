@@ -56,4 +56,17 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+To learn more about the Angular CLI and its commands, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Panel privado de estadísticas
+
+El proyecto incluye un panel propio en `/admin` (visitas, visitantes únicos, tiempo,
+scroll, países, dispositivos, referidos, proyectos más vistos, clics externos y
+conversión de contacto).
+
+- Guía de instalación: [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md)
+- Esquema de base de datos: [`supabase/schema.sql`](./supabase/schema.sql)
+- Configuración: `src/environments/environment.ts`
+
+Sin configurar Supabase, el portafolio funciona normal y `/admin` muestra los pasos
+para activarlo.

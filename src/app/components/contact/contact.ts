@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ScrollReveal } from '../../directives/scroll-reveal';
 import { LanguageService } from '../../services/language';
+import { AnalyticsService } from '../../services/analytics';
 
 @Component({
   selector: 'app-contact',
@@ -18,10 +19,14 @@ export class Contact {
   errorMessage: string | null = null;
   copiedEmail: boolean = false;
 
-  constructor(public langService: LanguageService) {}
+  constructor(
+    public langService: LanguageService,
+    private analytics: AnalyticsService,
+  ) {}
 
   copyEmail() {
     navigator.clipboard.writeText('mangelcs2003@gmail.com');
+    this.analytics.track('outbound_click', 'copiar_email');
     this.copiedEmail = true;
     setTimeout(() => {
       this.copiedEmail = false;
@@ -30,7 +35,9 @@ export class Contact {
 
   getMailtoLink(): string {
     const subject = encodeURIComponent(`Contacto desde Portafolio - ${this.name || 'Mensaje'}`);
-    const body = encodeURIComponent(`Nombre: ${this.name}\nCorreo: ${this.email}\n\nMensaje:\n${this.message}`);
+    const body = encodeURIComponent(
+      `Nombre: ${this.name}\nCorreo: ${this.email}\n\nMensaje:\n${this.message}`,
+    );
     return `mailto:mangelcs2003@gmail.com?subject=${subject}&body=${body}`;
   }
 
@@ -45,18 +52,19 @@ export class Contact {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           name: this.name,
           email: this.email,
           message: this.message,
           _subject: `Portfolio Contact: ${this.name}`,
-          _template: 'table'
-        })
+          _template: 'table',
+        }),
       });
 
       if (response.ok) {
+        this.analytics.track('contact_submit', 'formulario');
         this.submitted = true;
         this.name = '';
         this.email = '';
@@ -67,7 +75,8 @@ export class Contact {
     } catch (err) {
       console.error('Error enviando formulario:', err);
       // Fallback to mailto automatically or show error message
-      this.errorMessage = 'Hubo un inconveniente al enviar por la API. Puedes enviarme un correo haciendo clic abajo:';
+      this.errorMessage =
+        'Hubo un inconveniente al enviar por la API. Puedes enviarme un correo haciendo clic abajo:';
       window.location.href = this.getMailtoLink();
     } finally {
       this.isSubmitting = false;
@@ -79,4 +88,3 @@ export class Contact {
     this.errorMessage = null;
   }
 }
-
