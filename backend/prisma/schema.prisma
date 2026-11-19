@@ -22,3 +22,49 @@ model AnalyticsEvent {
   @@index([type])
   @@index([target])
 }
+
+model PortfolioVisit {
+  id              String   @id @default(uuid())
+  visitorId       String   @map("visitor_id")
+  sessionId       String   @map("session_id")
+  path            String?
+  referrer        String?
+  referrerHost    String?  @map("referrer_host")
+  utmSource       String?  @map("utm_source")
+  utmMedium       String?  @map("utm_medium")
+  utmCampaign     String?  @map("utm_campaign")
+  countryCode     String?  @map("country_code")
+  countryName     String?  @map("country_name")
+  city            String?
+  deviceType      String?  @map("device_type")
+  browser         String?
+  os              String?
+  screenWidth     Int?     @map("screen_width")
+  screenHeight    Int?     @map("screen_height")
+  language        String?
+  timezone        String?
+  durationSeconds Int      @default(0) @map("duration_seconds")
+  scrollDepth     Int      @default(0) @map("scroll_depth")
+  createdAt       DateTime @default(now()) @map("created_at")
+  lastSeenAt      DateTime @default(now()) @map("last_seen_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@index([sessionId])
+  @@index([visitorId])
+  @@map("portfolio_visits")
+}
+
+model PortfolioEvent {
+  id        Int      @id @default(autoincrement())
+  visitorId String   @map("visitor_id")
+  sessionId String   @map("session_id")
+  visitId   String?  @map("visit_id")
+  eventType String   @map("event_type")
+  eventName String?  @map("event_name")
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@index([eventType])
+  @@map("portfolio_events")
+}

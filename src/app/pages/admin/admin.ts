@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { isSupabaseConfigured } from '../../core/supabase';
+import { isApiConfigured } from '../../core/api';
 import { AdminService, DashboardData, EventRow, VisitRow } from './admin.service';
 
 const DAY_MS = 86_400_000;
@@ -58,7 +58,7 @@ function toRanking(map: Map<string, number>, total: number, limit = 6): CountIte
   styleUrl: './admin.css',
 })
 export class Admin implements OnInit, OnDestroy {
-  readonly configured = isSupabaseConfigured();
+  readonly configured = isApiConfigured();
 
   readonly session = signal<{ email: string | null } | null>(null);
   readonly loading = signal(false);
@@ -98,8 +98,8 @@ export class Admin implements OnInit, OnDestroy {
   // ---------------------------------------------------------------- auth
 
   async login(): Promise<void> {
-    if (!this.email.trim() || !this.password) {
-      this.loginError.set('Ingresa tu correo y contraseña.');
+    if (!this.password) {
+      this.loginError.set('Ingresa tu contraseña.');
       return;
     }
 

@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { getSupabase, isSupabaseConfigured } from '../core/supabase';
+import { getApiUrl, isApiConfigured } from '../core/api';
 
 type EventType =
   | 'section_view'
@@ -26,8 +26,8 @@ const BLOCKED_PATH_PREFIXES = ['/admin'];
 /**
  * Servicio de analítica propio (sin cookies de terceros).
  *
- * Guarda visitas y eventos en Supabase. Si no hay credenciales configuradas
- * simplemente no hace nada, así que el portafolio sigue funcionando igual.
+ * Guarda visitas y eventos en tu backend NestJS (Neon PostgreSQL).
+ * Si no hay URL configurada simplemente no hace nada.
  */
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService implements OnDestroy {
@@ -98,7 +98,7 @@ export class AnalyticsService implements OnDestroy {
     if (this.initialized || typeof window === 'undefined') return;
     this.initialized = true;
 
-    if (!isSupabaseConfigured()) return;
+    if (!isApiConfigured()) return;
     if (BLOCKED_PATH_PREFIXES.some((prefix) => window.location.pathname.startsWith(prefix))) return;
     // Abre el portafolio con ?ignore-analytics=1 una vez para excluir tu propio navegador.
     const params = new URLSearchParams(window.location.search);
@@ -131,8 +131,7 @@ export class AnalyticsService implements OnDestroy {
     this.maxScroll = 0;
 
     this.getGeo().then((geo) => {
-      const supabase = getSupabase();
-      if (!supabase) return;
+      if (!isApiConfigured()) return;
 
       const device = this.getDeviceInfo();
       const params = new URLSearchParams(window.location.search);
@@ -149,9 +148,10 @@ export class AnalyticsService implements OnDestroy {
         }
       }
 
-      void supabase
-        .from('portfolio_visits')
-        .insert({
+      void fetch(`${getApiUrl()}/analytics/visits`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           id: visitId,
           visitor_id: this.visitorId,
           session_id: this.sessionId,
@@ -171,54 +171,49 @@ export class AnalyticsService implements OnDestroy {
           screen_height: window.screen?.height ?? null,
           language: navigator.language || null,
           timezone: this.getTimezone(),
-          duration_seconds: 0,
-          scroll_depth: 0,
-          last_seen_at: new Date().toISOString(),
-        })
-        .then(({ error }) => {
-          if (error) console.warn('[analytics] no se pudo registrar la visita:', error.message);
-        });
+        }),
+      }).catch((error) => {
+        console.warn('[analytics] no se pudo registrar la visita:', error);
+      });
     });
   }
 
   track(eventType: EventType, eventName?: string, metadata: Record<string, unknown> = {}): void {
-    if (!this.enabled) return;
+    if (!this.enabled || !isApiConfigured()) return;
 
-    const supabase = getSupabase();
-    if (!supabase) return;
-
-    void supabase
-      .from('portfolio_events')
-      .insert({
+    void fetch(`${getApiUrl()}/analytics/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      keepalive: true,
+      body: JSON.stringify({
         visitor_id: this.visitorId,
         session_id: this.sessionId,
         visit_id: this.visitId,
         event_type: eventType,
         event_name: eventName ?? null,
         metadata,
-      })
-      .then(({ error }) => {
-        if (error) console.warn('[analytics] no se pudo registrar el evento:', error.message);
-      });
+      }),
+    }).catch((error) => {
+      console.warn('[analytics] no se pudo registrar el evento:', error);
+    });
   }
 
   /** Envía el tiempo y la profundidad de scroll actuales de la visita. */
   flushDuration(): void {
-    if (!this.enabled || !this.visitId) return;
-
-    const supabase = getSupabase();
-    if (!supabase) return;
+    if (!this.enabled || !this.visitId || !isApiConfigured()) return;
 
     const seconds = Math.min(this.currentActiveSeconds(), 7200);
-    void supabase
-      .rpc('portfolio_touch_visit', {
-        p_visit_id: this.visitId,
-        p_seconds: seconds,
-        p_scroll: this.maxScroll,
-      })
-      .then(({ error }) => {
-        if (error) console.warn('[analytics] no se pudo actualizar la duración:', error.message);
-      });
+    void fetch(`${getApiUrl()}/analytics/visits/${this.visitId}/touch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      keepalive: true,
+      body: JSON.stringify({
+        duration_seconds: seconds,
+        scroll_depth: this.maxScroll,
+      }),
+    }).catch((error) => {
+      console.warn('[analytics] no se pudo actualizar la duración:', error);
+    });
   }
 
   private currentActiveSeconds(): number {
