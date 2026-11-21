@@ -4,11 +4,48 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TrackEventDto } from './dto/track-event.dto';
 import { CreateEventDto, CreateVisitDto, TouchVisitDto } from './dto/visit.dto';
 
+const BOT_UA_PATTERN =
+  /bot|crawl|spider|slurp|headless|lighthouse|pingdom|uptime|vercel|screenshot|prerender|phantom|puppeteer|playwright|selenium|curl|wget|python|axios|node-fetch|go-http-client|facebookexternalhit|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|bingpreview|applebot|dataprovider|censys|ahrefs|semrush/i;
+
+const regionNamesEs = new Intl.DisplayNames(['es'], { type: 'region' });
+
 @Injectable()
 export class AnalyticsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createVisit(dto: CreateVisitDto, fallbackCountry?: string) {
+  isBot(userAgent?: string, screenWidth?: number | null): boolean {
+    if (!userAgent || !userAgent.trim()) return true;
+    if (BOT_UA_PATTERN.test(userAgent)) return true;
+    if (screenWidth !== undefined && screenWidth !== null && screenWidth <= 0) {
+      return true;
+    }
+    return false;
+  }
+
+  private resolveCountryName(
+    countryCode?: string | null,
+    countryName?: string | null,
+  ): string | null {
+    if (countryName && countryName.trim()) return countryName.trim();
+    if (!countryCode || countryCode.trim().length !== 2) return null;
+    try {
+      return regionNamesEs.of(countryCode.trim().toUpperCase()) ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  async createVisit(
+    dto: CreateVisitDto,
+    meta: { fallbackCountry?: string; userAgent?: string },
+  ) {
+    if (this.isBot(meta.userAgent, dto.screen_width)) {
+      return { id: dto.id ?? null, ignored: true };
+    }
+
+    const countryCode = dto.country_code ?? meta.fallbackCountry ?? null;
+    const countryName = this.resolveCountryName(countryCode, dto.country_name);
+
     const visit = await this.prisma.portfolioVisit.create({
       data: {
         id: dto.id,
@@ -20,8 +57,8 @@ export class AnalyticsService {
         utmSource: dto.utm_source ?? null,
         utmMedium: dto.utm_medium ?? null,
         utmCampaign: dto.utm_campaign ?? null,
-        countryCode: dto.country_code ?? fallbackCountry ?? null,
-        countryName: dto.country_name ?? null,
+        countryCode,
+        countryName,
         city: dto.city ?? null,
         deviceType: dto.device_type ?? null,
         browser: dto.browser ?? null,
@@ -65,7 +102,10 @@ export class AnalyticsService {
     return { ok: true };
   }
 
-  async createEvent(dto: CreateEventDto) {
+  async createEvent(dto: CreateEventDto, userAgent?: string) {
+    if (this.isBot(userAgent)) {
+      return { id: null, ignored: true };
+    }
     const event = await this.prisma.portfolioEvent.create({
       data: {
         visitorId: dto.visitor_id,
@@ -77,6 +117,46 @@ export class AnalyticsService {
       },
     });
     return { id: event.id };
+  }
+
+  async cleanupBots() {
+    const suspectVisits = await this.prisma.portfolioVisit.findMany({
+      where: {
+        durationSeconds: 0,
+        scrollDepth: 0,
+        OR: [{ os: 'Linux' }, { countryCode: 'US' }, { browser: 'Otro' }],
+      },
+      select: { id: true },
+    });
+
+    const ids = suspectVisits.map((v) => v.id);
+    if (!ids.length) return { deletedVisits: 0, deletedEvents: 0 };
+
+    const [deletedEvents, deletedVisits] = await Promise.all([
+      this.prisma.portfolioEvent.deleteMany({
+        where: { visitId: { in: ids } },
+      }),
+      this.prisma.portfolioVisit.deleteMany({
+        where: { id: { in: ids } },
+      }),
+    ]);
+
+    return {
+      deletedVisits: deletedVisits.count,
+      deletedEvents: deletedEvents.count,
+    };
+  }
+
+  async resetAll() {
+    const [deletedEvents, deletedVisits] = await Promise.all([
+      this.prisma.portfolioEvent.deleteMany({}),
+      this.prisma.portfolioVisit.deleteMany({}),
+    ]);
+
+    return {
+      deletedVisits: deletedVisits.count,
+      deletedEvents: deletedEvents.count,
+    };
   }
 
   async getDashboard(days: number) {

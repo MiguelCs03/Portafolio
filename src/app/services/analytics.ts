@@ -20,6 +20,9 @@ interface GeoInfo {
 const GEOLOCATION_CACHE_KEY = 'portfolio:geo';
 const VISITOR_KEY = 'portfolio:visitor-id';
 const SESSION_KEY = 'portfolio:session-id';
+const VISIT_KEY = 'portfolio:visit-id';
+const VISIT_AT_KEY = 'portfolio:visit-at';
+const VISIT_TTL_MS = 30 * 60_000;
 
 const BLOCKED_PATH_PREFIXES = ['/admin'];
 
@@ -100,8 +103,14 @@ export class AnalyticsService implements OnDestroy {
 
     if (!isApiConfigured()) return;
     if (BLOCKED_PATH_PREFIXES.some((prefix) => window.location.pathname.startsWith(prefix))) return;
-    // Abre el portafolio con ?ignore-analytics=1 una vez para excluir tu propio navegador.
+    if (navigator.webdriver) return;
+
     const params = new URLSearchParams(window.location.search);
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost && !params.has('test-analytics')) return;
+
+    // Abre el portafolio con ?ignore-analytics=1 una vez para excluir tu propio navegador.
     if (params.has('ignore-analytics')) {
       localStorage.setItem('portfolio:ignore', '1');
       console.info('[analytics] este navegador ya no será contabilizado.');
@@ -124,8 +133,18 @@ export class AnalyticsService implements OnDestroy {
   trackPageView(): void {
     if (!this.enabled) return;
 
+    const existingVisitId = sessionStorage.getItem(VISIT_KEY);
+    const existingVisitAt = Number(sessionStorage.getItem(VISIT_AT_KEY) || '0');
+    if (existingVisitId && Date.now() - existingVisitAt < VISIT_TTL_MS) {
+      this.visitId = existingVisitId;
+      this.activeStartedAt = Date.now();
+      return;
+    }
+
     const visitId = this.uuid();
     this.visitId = visitId;
+    sessionStorage.setItem(VISIT_KEY, visitId);
+    sessionStorage.setItem(VISIT_AT_KEY, String(Date.now()));
     this.activeStartedAt = Date.now();
     this.activeSeconds = 0;
     this.maxScroll = 0;

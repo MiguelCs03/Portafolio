@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   Param,
@@ -23,10 +24,14 @@ export class AnalyticsController {
   @Post('visits')
   createVisit(
     @Body() dto: CreateVisitDto,
+    @Headers('user-agent') userAgent?: string,
     @Headers('x-vercel-ip-country') vercelCountry?: string,
     @Headers('cf-ipcountry') cfCountry?: string,
   ) {
-    return this.analyticsService.createVisit(dto, vercelCountry || cfCountry);
+    return this.analyticsService.createVisit(dto, {
+      fallbackCountry: vercelCountry || cfCountry,
+      userAgent,
+    });
   }
 
   @Post('visits/:id/touch')
@@ -46,8 +51,11 @@ export class AnalyticsController {
   }
 
   @Post('events')
-  createEvent(@Body() dto: CreateEventDto) {
-    return this.analyticsService.createEvent(dto);
+  createEvent(
+    @Body() dto: CreateEventDto,
+    @Headers('user-agent') userAgent?: string,
+  ) {
+    return this.analyticsService.createEvent(dto, userAgent);
   }
 
   @UseGuards(AuthGuard)
@@ -56,6 +64,18 @@ export class AnalyticsController {
     @Query('days', new ParseIntPipe({ optional: true })) days?: number,
   ) {
     return this.analyticsService.getDashboard(days ?? 14);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('bots')
+  cleanupBots() {
+    return this.analyticsService.cleanupBots();
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('reset')
+  resetAll() {
+    return this.analyticsService.resetAll();
   }
 
   @Post('track')

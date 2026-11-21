@@ -68,6 +68,11 @@ export class Admin implements OnInit, OnDestroy {
   readonly days = signal(7);
   readonly data = signal<DashboardData>({ visits: [], events: [] });
   readonly updatedAt = signal<Date | null>(null);
+  readonly selfIgnored = signal(
+    typeof localStorage !== 'undefined' && localStorage.getItem('portfolio:ignore') === '1',
+  );
+  readonly actionBusy = signal(false);
+  readonly actionNotice = signal('');
 
   email = '';
   password = '';
@@ -84,6 +89,7 @@ export class Admin implements OnInit, OnDestroy {
 
     void this.admin.getSession().then((session) => {
       if (session?.user) {
+        this.markSelfIgnored();
         this.session.set({ email: session.user.email ?? null });
         void this.load();
         this.startAutoRefresh();
@@ -112,6 +118,7 @@ export class Admin implements OnInit, OnDestroy {
 
       if (!session?.user) throw new Error('No se pudo iniciar sesión.');
 
+      this.markSelfIgnored();
       this.session.set({ email: session.user.email ?? null });
       this.email = '';
       this.password = '';
@@ -161,6 +168,61 @@ export class Admin implements OnInit, OnDestroy {
 
   refresh(): void {
     void this.load();
+  }
+
+  toggleSelfIgnore(): void {
+    if (typeof localStorage === 'undefined') return;
+    if (this.selfIgnored()) {
+      localStorage.removeItem('portfolio:ignore');
+      this.selfIgnored.set(false);
+    } else {
+      localStorage.setItem('portfolio:ignore', '1');
+      this.selfIgnored.set(true);
+    }
+  }
+
+  async cleanupBots(): Promise<void> {
+    this.actionBusy.set(true);
+    this.actionNotice.set('');
+    try {
+      const res = await this.admin.cleanupBots();
+      this.actionNotice.set(
+        `Limpieza lista: ${res.deletedVisits} visitas bot eliminadas.`,
+      );
+      await this.load();
+    } catch (error) {
+      this.error.set(this.describeError(error));
+    } finally {
+      this.actionBusy.set(false);
+    }
+  }
+
+  async resetAnalytics(): Promise<void> {
+    if (
+      typeof window !== 'undefined' &&
+      !window.confirm('¿Seguro que deseas borrar todas las visitas y eventos de prueba para empezar desde 0?')
+    ) {
+      return;
+    }
+    this.actionBusy.set(true);
+    this.actionNotice.set('');
+    try {
+      const res = await this.admin.resetAll();
+      this.actionNotice.set(
+        `Panel reiniciado (${res.deletedVisits} visitas y ${res.deletedEvents} eventos borrados).`,
+      );
+      await this.load();
+    } catch (error) {
+      this.error.set(this.describeError(error));
+    } finally {
+      this.actionBusy.set(false);
+    }
+  }
+
+  private markSelfIgnored(): void {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.setItem('portfolio:ignore', '1');
+    this.selfIgnored.set(true);
   }
 
   private startAutoRefresh(): void {

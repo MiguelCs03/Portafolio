@@ -116,6 +116,30 @@ export class AdminService {
     localStorage.removeItem(EMAIL_KEY);
   }
 
+  async cleanupBots(): Promise<{ deletedVisits: number; deletedEvents: number }> {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) throw new Error('Sesión no iniciada.');
+
+    const response = await fetch(`${getApiUrl()}/analytics/bots`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('No se pudieron limpiar los bots.');
+    return (await response.json()) as { deletedVisits: number; deletedEvents: number };
+  }
+
+  async resetAll(): Promise<{ deletedVisits: number; deletedEvents: number }> {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) throw new Error('Sesión no iniciada.');
+
+    const response = await fetch(`${getApiUrl()}/analytics/reset`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('No se pudo reiniciar la analítica.');
+    return (await response.json()) as { deletedVisits: number; deletedEvents: number };
+  }
+
   private isTokenExpired(token: string): boolean {
     try {
       const parts = token.split('.');

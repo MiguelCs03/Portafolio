@@ -203,11 +203,66 @@ export const environment = &#123;
             · <span class="text-on-surface-variant/70">se actualiza solo cada 60 s</span>
           </p>
         </div>
-        <div class="flex items-center gap-2 text-xs text-on-surface-variant">
-          <span class="material-symbols-outlined text-base">visibility</span>
-          {{ totalVisits() }} visitas · {{ uniqueVisitors() }} personas
+        <div class="flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
+          <button
+            type="button"
+            (click)="toggleSelfIgnore()"
+            class="px-3 py-1.5 rounded-xl border transition-colors cursor-pointer flex items-center gap-1.5"
+            [class.border-primary/40]="selfIgnored()"
+            [class.bg-primary/10]="selfIgnored()"
+            [class.text-primary]="selfIgnored()"
+            [class.border-white/10]="!selfIgnored()"
+            title="Evita que tus propias visitas sumen en tus estadísticas"
+          >
+            <span class="material-symbols-outlined text-sm">{{
+              selfIgnored() ? 'visibility_off' : 'visibility'
+            }}</span>
+            {{ selfIgnored() ? 'Tu navegador: Excluido' : 'Tu navegador: Contando' }}
+          </button>
+
+          <button
+            type="button"
+            (click)="cleanupBots()"
+            [disabled]="actionBusy()"
+            class="px-3 py-1.5 rounded-xl border border-white/10 hover:border-amber-400/50 hover:text-amber-300 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+            title="Elimina visitas de bots/previews (0s y 0% scroll)"
+          >
+            <span class="material-symbols-outlined text-sm">cleaning_services</span>
+            Limpiar bots
+          </button>
+
+          <button
+            type="button"
+            (click)="resetAnalytics()"
+            [disabled]="actionBusy()"
+            class="px-3 py-1.5 rounded-xl border border-white/10 hover:border-red-400/50 hover:text-red-300 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+            title="Reiniciar todas las estadísticas desde 0"
+          >
+            <span class="material-symbols-outlined text-sm">delete_sweep</span>
+            Reiniciar
+          </button>
+
+          <span class="px-2 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base">visibility</span>
+            {{ totalVisits() }} visitas · {{ uniqueVisitors() }} personas
+          </span>
         </div>
       </div>
+
+      @if (actionNotice()) {
+        <div
+          class="flex items-center justify-between gap-2 text-xs text-primary bg-primary/10 border border-primary/30 rounded-2xl px-4 py-3"
+        >
+          <span>{{ actionNotice() }}</span>
+          <button
+            type="button"
+            (click)="actionNotice.set('')"
+            class="text-on-surface-variant hover:text-primary cursor-pointer"
+          >
+            Cerrar
+          </button>
+        </div>
+      }
 
       @if (error()) {
         <div
