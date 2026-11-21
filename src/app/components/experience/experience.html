@@ -1,20 +1,66 @@
 <section class="py-section-gap px-gutter max-w-4xl mx-auto" id="experience">
-  <h2 class="font-headline-lg text-3xl md:text-headline-lg text-on-surface mb-16 text-center">{{ langService.t().experience.title }}</h2>
-  <div class="relative border-l-2 border-white/10 ml-6 space-y-16">
-    @for (exp of experiences(); track exp.company) {
-      <div class="relative pl-12" appScrollReveal [revealDelay]="$index * 150">
-        <div [class]="exp.isCurrent ? 'absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-primary glow-cyan' : 'absolute -left-[11px] top-0 w-5 h-5 rounded-full border-2 border-primary bg-surface'"></div>
-        <div class="glass-card p-8 rounded-3xl">
-          <div class="flex flex-col md:flex-row justify-between mb-4 flex-wrap gap-2">
-            <h3 class="font-headline-md text-xl md:text-headline-md text-on-surface">{{ exp.role }} - {{ exp.company }}</h3>
-            <span class="font-code-sm text-primary">{{ exp.period }}</span>
+  <div class="text-center mb-14 space-y-2" appScrollReveal [revealDelay]="0">
+    <p class="font-mono text-xs text-[#e2b45a] tracking-[0.3em] uppercase font-bold">
+      03 // TRAYECTORIA PROFESIONAL
+    </p>
+    <h2 class="font-headline-lg text-3xl md:text-headline-lg font-extrabold text-on-surface">
+      {{ langService.t().experience.title }}
+    </h2>
+  </div>
+
+  <div class="relative ml-4 sm:ml-6 space-y-10 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-primary before:via-[#e2b45a]/50 before:to-transparent">
+    @for (exp of experiences(); track exp.company; let i = $index) {
+      <div class="relative pl-8 sm:pl-12" appScrollReveal [revealDelay]="i * 140">
+        <!-- Timeline Node -->
+        <div
+          [class]="
+            exp.isCurrent
+              ? 'absolute -left-[9px] top-6 w-5 h-5 rounded-full bg-primary shadow-[0_0_20px_rgba(0,245,212,0.8)] ring-4 ring-surface'
+              : 'absolute -left-[9px] top-6 w-5 h-5 rounded-full border-2 border-[#e2b45a] bg-surface ring-4 ring-surface'
+          "
+        ></div>
+
+        <!-- Experience Card -->
+        <div
+          class="glass-card group relative p-6 sm:p-8 rounded-3xl border border-white/10 hover:border-primary/45 transition-all duration-300"
+        >
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+          ></div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="font-mono text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-on-surface-variant">
+                EXP_0{{ i + 1 }}
+              </span>
+              @if (exp.isCurrent) {
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-[10px] font-mono font-bold text-emerald-300 uppercase tracking-wider">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  Actual
+                </span>
+              }
+            </div>
+            <span class="font-code-sm text-xs px-3 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary font-bold">
+              {{ exp.period }}
+            </span>
           </div>
-          <p class="text-on-surface-variant font-body-md mb-6 leading-relaxed">
+
+          <h3 class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">
+            {{ exp.role }} <span class="text-primary/80">·</span> {{ exp.company }}
+          </h3>
+
+          <p class="text-on-surface-variant font-body-md text-sm sm:text-base mb-6 leading-relaxed">
             {{ exp.description }}
           </p>
-          <div class="flex flex-wrap gap-2">
+
+          <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
             @for (tech of exp.technologies; track tech) {
-              <span class="bg-primary/10 border border-primary/20 px-3 py-1 rounded-full text-[10px] font-bold text-primary uppercase">{{ tech }}</span>
+              <span
+                class="bg-white/[0.04] hover:bg-primary/15 border border-white/10 hover:border-primary/35 px-3 py-1 rounded-full text-[11px] font-mono font-semibold text-on-surface-variant hover:text-primary transition-colors"
+              >
+                {{ tech }}
+              </span>
             }
           </div>
         </div>

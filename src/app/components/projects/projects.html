@@ -1,75 +1,186 @@
 <section class="py-section-gap px-gutter max-w-container-max mx-auto" id="projects">
-  <div class="text-center mb-16" appScrollReveal [revealDelay]="0">
-    <h2 class="font-headline-lg text-3xl md:text-headline-lg text-on-surface">{{ langService.t().projects.title }}</h2>
-    <p class="text-on-surface-variant font-body-md mt-2 max-w-2xl mx-auto">{{ langService.t().projects.desc }}</p>
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14" appScrollReveal [revealDelay]="0">
+    <div class="space-y-2">
+      <p class="font-mono text-xs text-primary tracking-[0.3em] uppercase font-bold">
+        04 // SISTEMAS EN PRODUCCIÓN
+      </p>
+      <h2 class="font-headline-lg text-3xl md:text-headline-lg font-extrabold text-on-surface">
+        {{ langService.t().projects.title }}
+      </h2>
+      <p class="text-on-surface-variant font-body-md max-w-2xl">
+        {{ langService.t().projects.desc }}
+      </p>
+    </div>
+    <div class="h-[1px] flex-grow bg-gradient-to-r from-primary/35 via-[#e2b45a]/25 to-transparent hidden md:block mb-3"></div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    @for (proj of projects(); track proj.title) {
-      <div appThreeDTilt appScrollReveal [revealDelay]="$index * 100"
-           [class]="proj.borderClass ? 'glass-card group rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,245,212,0.25)] ' + proj.borderClass : 'glass-card group rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,245,212,0.15)]'">
-        
-        <!-- Project Image Container -->
-        <div class="aspect-video relative overflow-hidden bg-surface-container cursor-pointer" (click)="openModal(proj)">
-          <img [src]="proj.imageUrl" [alt]="proj.title"
-               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"/>
-          <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent opacity-80 z-10"></div>
-          
-          <div class="absolute top-4 left-4 z-20 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider shadow-lg backdrop-blur-md"
-               [class]="proj.categoryClass">
-            {{ proj.category }}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+    @for (proj of projects(); track proj.title; let i = $index) {
+      <article
+        appThreeDTilt
+        appScrollReveal
+        [revealDelay]="i * 90"
+        [class]="
+          (proj.isFeatured ? 'lg:col-span-2 grid grid-cols-1 md:grid-cols-12 ' : 'flex flex-col ') +
+          'glass-card group relative rounded-3xl overflow-hidden transition-all duration-500 border border-white/10 hover:border-primary/50 hover:shadow-[0_20px_50px_rgba(0,245,212,0.14)]'
+        "
+      >
+        <!-- Top Luminance Hairline -->
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-30"
+        ></div>
+
+        <!-- Project Media Frame (OS Window Style) -->
+        <div
+          [class]="
+            (proj.isFeatured ? 'md:col-span-6 min-h-[260px] md:min-h-full ' : 'aspect-video ') +
+            'relative overflow-hidden bg-[#090c12] cursor-pointer flex flex-col'
+          "
+          (click)="openModal(proj)"
+        >
+          <!-- Mini Browser / App Window Top Bar -->
+          <div
+            class="relative z-20 flex items-center justify-between px-4 py-2.5 bg-[#0a0d14]/85 backdrop-blur-md border-b border-white/10"
+          >
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/90"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/90"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]/90"></span>
+              <span class="ml-2 font-mono text-[10px] text-on-surface-variant/75 uppercase tracking-wider">
+                PRJ_0{{ i + 1 }}
+              </span>
+            </div>
+            <span
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider shadow-sm"
+              [class]="proj.categoryClass"
+            >
+              {{ proj.category }}
+            </span>
           </div>
 
-          @if (proj.isFeatured) {
-            <div class="absolute top-4 right-4 z-20 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-primary text-on-primary uppercase tracking-wider flex items-center gap-1 shadow-md">
-              <span class="material-symbols-outlined text-xs">star</span> Destacado
-            </div>
-          }
+          <!-- Cover Image with Gradient Overlay -->
+          <div class="relative flex-grow overflow-hidden">
+            <img
+              [src]="proj.imageUrl"
+              [alt]="proj.title"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-[#0b0e14] via-[#0b0e14]/35 to-transparent opacity-85 z-10"
+            ></div>
+
+            @if (proj.isFeatured) {
+              <div
+                class="absolute bottom-3 left-4 z-20 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-[#e2b45a]/15 border border-[#e2b45a]/50 text-[#e2b45a] uppercase tracking-wider flex items-center gap-1.5 backdrop-blur-md"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-[#e2b45a] animate-pulse"></span>
+                Proyecto Destacado
+              </div>
+            }
+          </div>
         </div>
 
-        <!-- Project Content -->
-        <div class="p-6 sm:p-8 flex flex-col flex-grow justify-between space-y-4 app-parallax">
-          <div>
-            <h3 class="font-headline-md text-xl font-bold text-on-surface mb-2 cursor-pointer hover:text-primary transition-colors flex items-center gap-2" (click)="openModal(proj)">
-              {{ proj.title }}
-            </h3>
-            <p class="text-on-surface-variant font-body-md line-clamp-3 text-sm leading-relaxed">{{ proj.description }}</p>
+        <!-- Project Body -->
+        <div
+          [class]="
+            (proj.isFeatured ? 'md:col-span-6 ' : 'flex-grow ') +
+            'p-6 sm:p-7 flex flex-col justify-between space-y-5 app-parallax'
+          "
+        >
+          <div class="space-y-3">
+            <div class="flex items-start justify-between gap-3">
+              <h3
+                class="font-headline-md text-xl sm:text-2xl font-bold text-on-surface cursor-pointer group-hover:text-primary transition-colors leading-snug"
+                (click)="openModal(proj)"
+              >
+                {{ proj.title }}
+              </h3>
+              <div class="flex gap-1.5 flex-shrink-0 pt-1">
+                @for (icon of proj.icons; track icon) {
+                  <span
+                    class="w-8 h-8 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary"
+                  >
+                    <span
+                      class="material-symbols-outlined text-base"
+                      [style.font-variation-settings]="icon === 'psychology' ? '\'FILL\' 1' : null"
+                    >
+                      {{ icon }}
+                    </span>
+                  </span>
+                }
+              </div>
+            </div>
+
+            <p class="text-on-surface-variant font-body-md text-sm leading-relaxed line-clamp-3">
+              {{ proj.description }}
+            </p>
+
+            @if (proj.isFeatured && proj.keyFeatures && proj.keyFeatures.length > 0) {
+              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                @for (feat of proj.keyFeatures.slice(0, 4); track feat) {
+                  <li class="flex items-center gap-1.5 text-xs text-on-surface-variant/90">
+                    <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                    <span class="truncate">{{ feat }}</span>
+                  </li>
+                }
+              </ul>
+            }
           </div>
 
-          <!-- Tech Stack Pill Badges -->
-          @if (proj.techStackBadges && proj.techStackBadges.length > 0) {
-            <div class="flex flex-wrap gap-1.5 pt-1">
-              @for (badge of proj.techStackBadges.slice(0, 3); track badge) {
-                <span class="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-on-surface-variant">
-                  {{ badge }}
-                </span>
-              }
-              @if (proj.techStackBadges.length > 3) {
-                <span class="px-2 py-0.5 rounded-full bg-primary/10 text-[11px] font-mono font-bold text-primary">
-                  +{{ proj.techStackBadges.length - 3 }}
-                </span>
-              }
-            </div>
-          }
+          <div class="space-y-4">
+            <!-- Tech Stack Pills -->
+            @if (proj.techStackBadges && proj.techStackBadges.length > 0) {
+              <div class="flex flex-wrap gap-1.5">
+                @for (badge of proj.techStackBadges.slice(0, proj.isFeatured ? 5 : 3); track badge) {
+                  <span
+                    class="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/10 text-[11px] font-mono text-on-surface-variant group-hover:border-primary/25 transition-colors"
+                  >
+                    {{ badge }}
+                  </span>
+                }
+                @if (proj.techStackBadges.length > (proj.isFeatured ? 5 : 3)) {
+                  <span
+                    class="px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/25 text-[11px] font-mono font-bold text-primary"
+                  >
+                    +{{ proj.techStackBadges.length - (proj.isFeatured ? 5 : 3) }}
+                  </span>
+                }
+              </div>
+            }
 
-          <div class="flex justify-between items-center pt-3 border-t border-white/10">
-            <div class="flex gap-2">
-              @for (icon of proj.icons; track icon) {
-                <span class="material-symbols-outlined text-primary text-xl"
-                      [style.font-variation-settings]="icon === 'psychology' ? '\'FILL\' 1' : null">{{ icon }}</span>
+            <!-- Actions Footer -->
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-white/10">
+              @if (proj.link) {
+                <a
+                  [href]="proj.link"
+                  target="_blank"
+                  rel="noopener"
+                  (click)="audioService.playClick()"
+                  class="text-xs font-mono text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1.5"
+                >
+                  <span class="material-symbols-outlined text-sm">language</span>
+                  <span>{{ proj.linkText || 'Abrir' }}</span>
+                </a>
+              } @else {
+                <span class="text-[11px] font-mono text-on-surface-variant/60">Arquitectura privada</span>
               }
+
+              <button
+                type="button"
+                (click)="openModal(proj)"
+                (mouseenter)="audioService.playHover()"
+                class="text-primary font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary hover:text-on-primary border border-primary/35 shadow-sm"
+              >
+                {{ langService.t().projects.detailsBtn }}
+                <span class="material-symbols-outlined text-sm">arrow_outward</span>
+              </button>
             </div>
-            <button (click)="openModal(proj)" (mouseenter)="audioService.playHover()" 
-                    class="text-primary font-bold text-xs sm:text-sm flex items-center gap-1.5 hover:translate-x-0.5 transition-all cursor-pointer px-4 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 border border-primary/30 shadow-sm">
-              {{ langService.t().projects.detailsBtn }}
-              <span class="material-symbols-outlined text-sm">open_in_new</span>
-            </button>
           </div>
         </div>
-      </div>
+      </article>
     }
   </div>
 
   <app-project-modal [project]="selectedProject" (close)="closeModal()"></app-project-modal>
 </section>
-
