@@ -1,0 +1,25 @@
+@keyframes floatGentle {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.floating-badge {
+  animation: floatGentle 5.5s ease-in-out infinite;
+}
+
+.floating-delay-1 {
+  animation-delay: 0.9s;
+}
+
+.floating-delay-2 {
+  animation-delay: 1.8s;
+}
+
+.floating-delay-3 {
+  animation-delay: 2.7s;
+}

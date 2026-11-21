@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NeuralBg } from '../../components/neural-bg/neural-bg';
 import { Header } from '../../components/header/header';
-import { Hero } from '../../components/hero/hero';
+import { LaptopScroll } from '../../components/laptop-scroll/laptop-scroll';
 import { Terminal } from '../../components/terminal/terminal';
 import { TechStack } from '../../components/tech-stack/tech-stack';
 import { Experience } from '../../components/experience/experience';
@@ -12,7 +12,7 @@ import { AnalyticsService } from '../../services/analytics';
 
 @Component({
   selector: 'app-portfolio',
-  imports: [NeuralBg, Header, Hero, Terminal, TechStack, Experience, Projects, Contact, Footer],
+  imports: [NeuralBg, Header, LaptopScroll, Terminal, TechStack, Experience, Projects, Contact, Footer],
   templateUrl: './portfolio.html',
   styleUrl: './portfolio.css',
 })
